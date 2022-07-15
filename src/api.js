@@ -6,6 +6,8 @@ const app = express()
 const router = express.Router()
 
 router.get('/', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.json([
       { id: '1', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
       { id: '2', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
