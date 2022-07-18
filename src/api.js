@@ -5,17 +5,23 @@ const app = express()
 const router = express.Router()
 
 
-router.get('/', (req, res) => {
+router.get('/plants', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.json([
-        { id: '1', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
-        { id: '2', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
-        { id: '3', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
-        { id: '4', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
-        { id: '5', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' },
-        { id: '6', name: 'Ландыш', img: 'plantImg', description: 'Вид травянистых цветковых растений, распространённый в регионах с умеренным климатом Северного полушария.' }
-    ])
+
+    const response = await fetch('https://api.airtable.com/v0/apphq3bB8tbOJbcaa/images', { headers: { Authorization: process.env.VUE_APP_API_KEY } })
+    const data = await response.json()
+    const readyData = data.records
+    const readyResponse = readyData.map(el => {
+        const formattedData = {
+            id: el.fields.id,
+            description: el.fields.description,
+            name: el.fields.Name,
+            img: el.fields.image[0].url
+        }
+        return formattedData
+    })
+    res.json(readyResponse)
 })
 
 app.use('/.netlify/functions/api', router)
