@@ -38,7 +38,6 @@ app.post('/plants', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(err);
     }
 }));
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}`);
 });
