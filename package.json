@@ -7,7 +7,6 @@
   "license": "ISC",
   "scripts": {
     "dev": "tsc -w",
-    "build": "tsc",
     "watch": "nodemon --inspect ./dist/index.js"
   },
   "dependencies": {
