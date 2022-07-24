@@ -10,7 +10,7 @@ app.use(cors())
 // app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
 app.get('/', (req: Request, res: Response) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080')
+  res.setHeader('Access-Control-Allow-Origin', '*')
 
   res.json('main')
 })
