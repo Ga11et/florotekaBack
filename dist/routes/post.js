@@ -52,21 +52,26 @@ exports.postPlant = postPlant;
 const postAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const { login, pass } = req.body.data;
-    try {
-        (0, airtable_1.default)('admins').select().eachPage((records) => {
-            const formattedData = records.map((el) => ({ login: el.fields.login, pass: el.fields.password }));
-            const user = formattedData.find((el) => el.login == login);
-            if (!user)
-                res.status(404).json('Неверно введенные данные');
-            const isPassValid = bcrypt_1.default.compareSync(pass, formattedData[0].pass);
-            if (!isPassValid)
-                res.status(404).json('Неверно введенные данные');
-            const token = jsonwebtoken_1.default.sign({ login, pass }, 'secret', { expiresIn: '1h' });
-            res.status(200).json(token);
+    (0, airtable_1.default)('admins').select().eachPage((records) => __awaiter(void 0, void 0, void 0, function* () {
+        const returnValue = records.map((el) => {
+            const adminItem = {
+                login: el.fields.login,
+                pass: el.fields.password
+            };
+            return adminItem;
         });
-    }
-    catch (error) {
-        console.log(error);
-    }
+        const user = returnValue.find((el) => el.login === login);
+        if (!user) {
+            res.status(404).json({ error: 'Неверно введенные данные' });
+            return;
+        }
+        const isPassValid = bcrypt_1.default.compareSync(pass, user.pass);
+        if (!isPassValid) {
+            res.status(404).json({ error: 'Неверно введенные данные' });
+            return;
+        }
+        const token = jsonwebtoken_1.default.sign({ login, pass }, 'secret', { expiresIn: '1h' });
+        res.status(200).json({ token: token });
+    }));
 });
 exports.postAuth = postAuth;
