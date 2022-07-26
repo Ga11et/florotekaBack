@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postPlant = void 0;
+exports.postAuth = exports.postPlant = void 0;
 const express_validator_1 = require("express-validator");
 const airtable_1 = __importDefault(require("../airtable"));
 const cloudinary_1 = __importDefault(require("../cloudinary"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const postPlant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.setHeader('Access-Control-Allow-Origin', '*');
     if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
@@ -47,3 +49,24 @@ const postPlant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.postPlant = postPlant;
+const postAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const { login, pass } = req.body.data;
+    try {
+        (0, airtable_1.default)('admins').select().eachPage((records) => {
+            const formattedData = records.map((el) => ({ login: el.fields.login, pass: el.fields.password }));
+            const user = formattedData.find((el) => el.login == login);
+            if (!user)
+                res.status(404).json('Неверно введенные данные');
+            const isPassValid = bcrypt_1.default.compareSync(pass, formattedData[0].pass);
+            if (!isPassValid)
+                res.status(404).json('Неверно введенные данные');
+            const token = jsonwebtoken_1.default.sign({ login, pass }, 'secret', { expiresIn: '1h' });
+            res.status(200).json(token);
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.postAuth = postAuth;

@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import cors from 'cors'
 import { getPlants, getPosts } from './routes/get'
-import { postPlant } from './routes/post'
+import { postAuth, postPlant } from './routes/post'
 import { postPlantValidator } from './validations/validations'
 
 const express = require('express')
@@ -19,6 +19,7 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/plants', getPlants)
 app.get('/posts', getPosts)
 app.post('/plants', postPlantValidator, postPlant)
+app.post('/login', postAuth)
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening on port ${process.env.PORT}`)

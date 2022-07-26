@@ -1,8 +1,10 @@
-import { Request, Response } from 'express'
+import e, { Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import base from '../airtable'
 import cloudinary from '../cloudinary'
 import { plantAirtableContentType } from '../models'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 export const postPlant = async (req: Request, res: Response) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -36,4 +38,25 @@ export const postPlant = async (req: Request, res: Response) => {
     console.log(err)
   }
 
+}
+
+export const postAuth = async (req: Request, res: Response) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  const { login, pass } = req.body.data
+  try {
+
+    base('admins').select().eachPage((records: any) => {
+      const formattedData = records.map((el: any) => ({ login: el.fields.login, pass: el.fields.password }))
+      const user = formattedData.find((el: any) => el.login == login)
+      if (!user) res.status(404).json('Неверно введенные данные')
+      const isPassValid = bcrypt.compareSync(pass, formattedData[0].pass)
+      if (!isPassValid) res.status(404).json('Неверно введенные данные')
+      const token = jwt.sign({ login, pass }, 'secret', { expiresIn: '1h' })
+      res.status(200).json(token)
+    })
+
+  } catch (error) {
+    console.log(error)   
+  }
+  
 }

@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 app.get('/plants', get_1.getPlants);
 app.get('/posts', get_1.getPosts);
 app.post('/plants', validations_1.postPlantValidator, post_1.postPlant);
+app.post('/login', post_1.postAuth);
 app.listen(process.env.PORT, () => {
     console.log(`Example app listening on port ${process.env.PORT}`);
 });
