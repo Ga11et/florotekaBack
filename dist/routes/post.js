@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postAuth = exports.postPlant = void 0;
+exports.postBeforeAfter = exports.postAuth = exports.postPlant = void 0;
 const express_validator_1 = require("express-validator");
 const airtable_1 = __importDefault(require("../airtable"));
 const cloudinary_1 = __importDefault(require("../cloudinary"));
@@ -75,3 +75,13 @@ const postAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }));
 });
 exports.postAuth = postAuth;
+const postBeforeAfter = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const { heading, description, before, after } = req.body.data;
+    if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
+        res.status(404).json((0, express_validator_1.validationResult)(req).array());
+        return;
+    }
+    res.json('ok');
+});
+exports.postBeforeAfter = postBeforeAfter;

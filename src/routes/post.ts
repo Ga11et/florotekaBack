@@ -68,3 +68,14 @@ export const postAuth = async (req: Request, res: Response) => {
     res.status(200).json({ token: token })
   })
 }
+
+export const postBeforeAfter = async (req: Request, res: Response) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  const { heading, description, before, after } = req.body.data
+  if (!validationResult(req).isEmpty()) {
+    res.status(404).json(validationResult(req).array())
+    return
+  }
+
+  res.json('ok')
+}
