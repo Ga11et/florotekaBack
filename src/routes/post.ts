@@ -5,6 +5,7 @@ import cloudinary from '../cloudinary'
 import { plantAirtableContentType } from '../models'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { AirtablePostType } from '../models/airtableModels'
 
 export const postPlant = async (req: Request, res: Response) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -77,5 +78,69 @@ export const postBeforeAfter = async (req: Request, res: Response) => {
     return
   }
 
+  try {
+    const beforeUrl = await cloudinary.uploader.upload(req.body.data.before)
+      .then( resp => resp.url)
+    const afterUrl = await cloudinary.uploader.upload(req.body.data.after)
+      .then( resp => resp.url)
+
+    const airtableData: AirtablePostType = {
+      fields: {
+        Name: heading,
+        describtion: description,
+        text: description,
+        date: (new Date).getTime(),
+        after: [{ url: afterUrl}],
+        before: [{ url: beforeUrl}],
+        images: [],
+        type: 'beforeAfter'
+      }
+    }
+    base('posts').create([airtableData])
+  } catch (error) {
+    res.status(500).json({ msg: 'server mistake', error: error })
+  }
+  
   res.json('ok')
+}
+
+export const postTechnologies = async (req: Request, res: Response) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  const { heading, description, stepPhotos, stepTexts } = req.body.data
+  if (!validationResult(req).isEmpty()) {
+    res.status(404).json(validationResult(req).array())
+    return
+  }
+
+  try {
+    const stepPhotoUrls = await stepPhotos.map( async (photo: string) => {
+      const url = await cloudinary.uploader.upload(photo).then( photo => photo.url )
+      return url
+    })
+  
+    Promise.all(stepPhotoUrls).then( values => {
+      
+      
+      const airtableData: AirtablePostType = {
+        fields: {
+          Name: heading,
+          describtion: description,
+          text: stepTexts.join('\n\n'),
+          date: (new Date).getTime(),
+          after: [],
+          before: [],
+          images: values.map( image => ({ url: image })),
+          type: 'technologies'
+        }
+      }
+      
+      base('posts').create([airtableData])
+
+      res.json('ok')
+    })
+  } catch (error) {
+    res.status(500).json({ msg: 'server mistake', error: error })
+  }
+  
+
 }

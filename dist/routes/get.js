@@ -49,16 +49,17 @@ const getPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     (0, airtable_1.default)('posts').select({
         view: "Grid view"
     }).eachPage((records) => {
-        const returnValue = records.map((el) => {
+        const returnValue = records.map(el => {
             const postItem = {
-                heading: el._rawJson.fields.heading,
-                text: el._rawJson.fields.text,
-                date: el._rawJson.fields.date,
-                after: el._rawJson.fields.after ? el._rawJson.fields.after[0].url : '',
-                before: el._rawJson.fields.before ? el._rawJson.fields.before[0].url : '',
-                images: el._rawJson.fields.images ? el._rawJson.fields.images.map(el => el.url) : [],
-                type: el._rawJson.fields.type,
-                id: el._rawJson.fields.id
+                id: el.id,
+                heading: el.fields.Name,
+                describtion: el.fields.describtion,
+                text: el.fields.text,
+                date: el.fields.date,
+                after: el.fields.after ? el.fields.after[0].url : '',
+                before: el.fields.before ? el.fields.before[0].url : '',
+                images: el.fields.images ? el.fields.images.map(el => el.url) : [],
+                type: el.fields.type
             };
             return postItem;
         });

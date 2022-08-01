@@ -17,3 +17,12 @@ export const postBeforeAfterValidator = [
   body('data.before', 'фото должно существовать').isLength({min: 1}),
   body('data.after', 'фото должно существовать').isLength({min: 1})
 ]
+
+export const postTechnologiesValidator = [
+  body('data.heading', 'Заголовок должен существовать').isLength({min: 1}),
+  body('data.description', 'Описание должно существовать').isLength({min: 1}),
+  body('data.stepPhotos', 'Хотя бы один шаг должен существовать').isLength({min: 1}),
+  body('data.stepTexts', 'Хотя бы один шаг должен существовать').isLength({min: 1}),
+  body('data.stepTexts', 'Шаги должны быть заполненны полностью').custom((value) => value.findIndex((el: string) => el === '') === -1),
+  body('data.stepPhotos', 'Шаги должны быть заполненны полностью').custom((value) => value.findIndex((el: string) => el === '') === -1)
+]

@@ -1,4 +1,4 @@
-type postType = 'scienceActivity' | 'beforeAfter'
+export type postType = 'scienceActivity' | 'beforeAfter' | 'technologies'
 export type PlantType = 'Деревья' | 'Декоративные кустарники' | 'Плодово-ягодные деревья и кустарники' |
   'Ягодники' | 'Многолетние декоративные травянистые растения' | 'Однолетние декоративные травянистые растения' |
   'Почвопокровные растения' | 'Декоративные объекты' | 'Комнатные растения' | 'Овощные культуры'
@@ -27,7 +27,8 @@ export type beforeAfterPostPropsType = {
 export type PostPropsType = {
   id: string
   heading: string
-  date: string
+  describtion: string
+  date: number
   text: string
   before: string
   after: string
@@ -100,3 +101,4 @@ export type AirtableResponsePostRecordType = {
     }
   }
 }
+

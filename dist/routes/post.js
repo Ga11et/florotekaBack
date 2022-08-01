@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postBeforeAfter = exports.postAuth = exports.postPlant = void 0;
+exports.postTechnologies = exports.postBeforeAfter = exports.postAuth = exports.postPlant = void 0;
 const express_validator_1 = require("express-validator");
 const airtable_1 = __importDefault(require("../airtable"));
 const cloudinary_1 = __importDefault(require("../cloudinary"));
@@ -82,6 +82,62 @@ const postBeforeAfter = (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(404).json((0, express_validator_1.validationResult)(req).array());
         return;
     }
+    try {
+        const beforeUrl = yield cloudinary_1.default.uploader.upload(req.body.data.before)
+            .then(resp => resp.url);
+        const afterUrl = yield cloudinary_1.default.uploader.upload(req.body.data.after)
+            .then(resp => resp.url);
+        const airtableData = {
+            fields: {
+                Name: heading,
+                describtion: description,
+                text: description,
+                date: (new Date).getTime(),
+                after: [{ url: afterUrl }],
+                before: [{ url: beforeUrl }],
+                images: [],
+                type: 'beforeAfter'
+            }
+        };
+        (0, airtable_1.default)('posts').create([airtableData]);
+    }
+    catch (error) {
+        res.status(500).json({ msg: 'server mistake', error: error });
+    }
     res.json('ok');
 });
 exports.postBeforeAfter = postBeforeAfter;
+const postTechnologies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const { heading, description, stepPhotos, stepTexts } = req.body.data;
+    if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
+        res.status(404).json((0, express_validator_1.validationResult)(req).array());
+        return;
+    }
+    try {
+        const stepPhotoUrls = yield stepPhotos.map((photo) => __awaiter(void 0, void 0, void 0, function* () {
+            const url = yield cloudinary_1.default.uploader.upload(photo).then(photo => photo.url);
+            return url;
+        }));
+        Promise.all(stepPhotoUrls).then(values => {
+            const airtableData = {
+                fields: {
+                    Name: heading,
+                    describtion: description,
+                    text: stepTexts.join('\n\n'),
+                    date: (new Date).getTime(),
+                    after: [],
+                    before: [],
+                    images: values.map(image => ({ url: image })),
+                    type: 'technologies'
+                }
+            };
+            (0, airtable_1.default)('posts').create([airtableData]);
+            res.json('ok');
+        });
+    }
+    catch (error) {
+        res.status(500).json({ msg: 'server mistake', error: error });
+    }
+});
+exports.postTechnologies = postTechnologies;

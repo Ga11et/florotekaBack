@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import base from '../airtable';
-import { AirtableResponsePostRecordType, plantPropsType, PostPropsType } from '../models';
+import { plantPropsType, PostPropsType } from '../models';
+import { AirtablePostRecordType } from '../models/airtableModels';
 
 export const getPlants = async (req: Request, res: Response) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -35,17 +36,18 @@ export const getPosts = async (req: Request, res: Response) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   base('posts').select({
     view: "Grid view"
-  }).eachPage((records: AirtableResponsePostRecordType[]) => {
-    const returnValue = records.map((el: AirtableResponsePostRecordType) => {
+  }).eachPage((records: AirtablePostRecordType[]) => {
+    const returnValue = records.map(el => {
       const postItem: PostPropsType = {
-        heading: el._rawJson.fields.heading,
-        text: el._rawJson.fields.text,
-        date: el._rawJson.fields.date,
-        after: el._rawJson.fields.after ? el._rawJson.fields.after[0].url : '',
-        before: el._rawJson.fields.before ? el._rawJson.fields.before[0].url : '',
-        images: el._rawJson.fields.images ? el._rawJson.fields.images.map(el => el.url) : [],
-        type: el._rawJson.fields.type,
-        id: el._rawJson.fields.id
+        id: el.id,
+        heading: el.fields.Name,
+        describtion: el.fields.describtion,
+        text: el.fields.text,
+        date: el.fields.date,
+        after: el.fields.after ? el.fields.after[0].url : '',
+        before: el.fields.before ? el.fields.before[0].url : '',
+        images: el.fields.images ? el.fields.images.map(el => el.url) : [],
+        type: el.fields.type
       }
       return postItem
     })
