@@ -1,4 +1,4 @@
-export type postType = 'scienceActivity' | 'beforeAfter' | 'technologies'
+export type postType = 'scienceActivity' | 'beforeAfter' | 'technologies' | 'things'
 export type PlantType = 'Деревья' | 'Декоративные кустарники' | 'Плодово-ягодные деревья и кустарники' |
   'Ягодники' | 'Многолетние декоративные травянистые растения' | 'Однолетние декоративные травянистые растения' |
   'Почвопокровные растения' | 'Декоративные объекты' | 'Комнатные растения' | 'Овощные культуры'

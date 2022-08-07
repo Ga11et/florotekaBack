@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postTechnologies = exports.postBeforeAfter = exports.postAuth = exports.postPlant = void 0;
+exports.postThings = exports.postTechnologies = exports.postBeforeAfter = exports.postAuth = exports.postPlant = void 0;
 const express_validator_1 = require("express-validator");
 const airtable_1 = __importDefault(require("../airtable"));
 const cloudinary_1 = __importDefault(require("../cloudinary"));
@@ -141,3 +141,36 @@ const postTechnologies = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.postTechnologies = postTechnologies;
+const postThings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const { heading, describtion, photos } = req.body.data;
+    if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
+        res.status(404).json((0, express_validator_1.validationResult)(req).array());
+        return;
+    }
+    try {
+        const photoUrls = yield photos.map((photo) => {
+            return cloudinary_1.default.uploader.upload(photo);
+        });
+        Promise.all(photoUrls).then(urls => {
+            const airtableData = {
+                fields: {
+                    Name: heading,
+                    describtion: describtion,
+                    text: '',
+                    date: (new Date).getTime(),
+                    after: [],
+                    before: [],
+                    images: urls.map(image => ({ url: image.url })),
+                    type: 'things'
+                }
+            };
+            (0, airtable_1.default)('posts').create([airtableData]);
+            res.json('ok');
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ msg: 'server mistake', error: error });
+    }
+});
+exports.postThings = postThings;

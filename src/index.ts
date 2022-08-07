@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 import cors from 'cors'
 import { getPlants, getPosts } from './routes/get'
-import { postAuth, postBeforeAfter, postPlant, postTechnologies } from './routes/post'
-import { postBeforeAfterValidator, postPlantValidator, postTechnologiesValidator } from './validations/validations'
+import { postAuth, postBeforeAfter, postPlant, postTechnologies, postThings } from './routes/post'
+import { postBeforeAfterValidator, postPlantValidator, postTechnologiesValidator, postThingsValidator } from './validations/validations'
 import authMiddleware from './middleware/middleware'
 
 const express = require('express')
@@ -23,7 +23,9 @@ app.post('/login', postAuth)
 app.post('/plants', authMiddleware, postPlantValidator, postPlant)
 app.post('/beforeAfter', authMiddleware,  postBeforeAfterValidator, postBeforeAfter)
 app.post('/technologies', authMiddleware, postTechnologiesValidator, postTechnologies)
+app.post('/things', authMiddleware, postThingsValidator, postThings)
 
-app.listen(process.env.PORT, () => {
+const port = process.env.PORT || 3000
+app.listen(port, () => {
   console.log(`Example app listening on port ${process.env.PORT}`)
 })

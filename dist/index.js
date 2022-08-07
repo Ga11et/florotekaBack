@@ -23,6 +23,8 @@ app.post('/login', post_1.postAuth);
 app.post('/plants', middleware_1.default, validations_1.postPlantValidator, post_1.postPlant);
 app.post('/beforeAfter', middleware_1.default, validations_1.postBeforeAfterValidator, post_1.postBeforeAfter);
 app.post('/technologies', middleware_1.default, validations_1.postTechnologiesValidator, post_1.postTechnologies);
-app.listen(process.env.PORT, () => {
+app.post('/things', middleware_1.default, validations_1.postThingsValidator, post_1.postThings);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
     console.log(`Example app listening on port ${process.env.PORT}`);
 });
