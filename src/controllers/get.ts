@@ -79,7 +79,7 @@ export const getControllers = {
           .json({token: tokens.accessToken})
       })
     } catch (error) {
-      return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован" }])
+      return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован here?" }])
     }
   }
 }
