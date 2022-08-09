@@ -65,7 +65,7 @@ export const getControllers = {
     try {
       const { refreshToken } = req.cookies
       const userData = tokenServises.checkRefreshToken(refreshToken) as { id: string, login: string }
-      if (!userData.id) return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован" }])
+      if (!userData.id) return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован userdata" }])
       
       base('admins').select().eachPage( (records: AirtableAdminRecordType[]) => {
 

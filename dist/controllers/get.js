@@ -76,7 +76,7 @@ exports.getControllers = {
             const { refreshToken } = req.cookies;
             const userData = tokenServises_1.tokenServises.checkRefreshToken(refreshToken);
             if (!userData.id)
-                return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован" }]);
+                return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован userdata" }]);
             (0, airtable_1.default)('admins').select().eachPage((records) => {
                 const existedAdminRecord = records.find(el => el.id === userData.id);
                 if (!existedAdminRecord)
