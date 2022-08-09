@@ -75,7 +75,7 @@ export const getControllers = {
         const tokens = loginServises.generateTokens({ id: userData.id, login: userData.login })
       
         res.status(200)
-          .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 })
+          .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, secure: true })
           .json({token: tokens.accessToken})
       })
     } catch (error) {

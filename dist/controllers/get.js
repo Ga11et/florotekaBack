@@ -83,7 +83,7 @@ exports.getControllers = {
                     return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован" }]);
                 const tokens = loginServises_1.loginServises.generateTokens({ id: userData.id, login: userData.login });
                 res.status(200)
-                    .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 })
+                    .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, secure: true })
                     .json({ token: tokens.accessToken });
             });
         }
