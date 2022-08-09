@@ -70,7 +70,7 @@ export const getControllers = {
       base('admins').select().eachPage( (records: AirtableAdminRecordType[]) => {
 
         const existedAdminRecord = records.find(el => el.id === userData.id)
-        if (!existedAdminRecord) return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован" }])
+        if (!existedAdminRecord) return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован adminRecord" }])
 
         const tokens = loginServises.generateTokens({ id: userData.id, login: userData.login })
       

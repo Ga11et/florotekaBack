@@ -80,7 +80,7 @@ exports.getControllers = {
             (0, airtable_1.default)('admins').select().eachPage((records) => {
                 const existedAdminRecord = records.find(el => el.id === userData.id);
                 if (!existedAdminRecord)
-                    return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован" }]);
+                    return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован adminRecord" }]);
                 const tokens = loginServises_1.loginServises.generateTokens({ id: userData.id, login: userData.login });
                 res.status(200)
                     .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, secure: true })
