@@ -19,7 +19,7 @@ export const loginServises = {
   },
 
   generateTokens: (data: { login: string, id: string }) => {
-    const accessToken = jwt.sign(data, process.env.JWT_TOKEN || 'secret', { expiresIn: '10s' })
+    const accessToken = jwt.sign(data, process.env.JWT_TOKEN || 'secret', { expiresIn: '2h' })
     const refreshToken = jwt.sign(data, process.env.JWT_REFRESH_TOKEN || 'secret', { expiresIn: '30d' })
 
     base('tokens').select().eachPage( async (records: AirtableTokenRecordType[]) => {

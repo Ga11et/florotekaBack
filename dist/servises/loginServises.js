@@ -29,7 +29,7 @@ exports.loginServises = {
         return returnValue;
     },
     generateTokens: (data) => {
-        const accessToken = jsonwebtoken_1.default.sign(data, process.env.JWT_TOKEN || 'secret', { expiresIn: '10s' });
+        const accessToken = jsonwebtoken_1.default.sign(data, process.env.JWT_TOKEN || 'secret', { expiresIn: '2h' });
         const refreshToken = jsonwebtoken_1.default.sign(data, process.env.JWT_REFRESH_TOKEN || 'secret', { expiresIn: '30d' });
         (0, airtable_1.default)('tokens').select().eachPage((records) => __awaiter(void 0, void 0, void 0, function* () {
             const existedRecord = records.find(el => data.id === el.fields.id);
