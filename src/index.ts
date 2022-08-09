@@ -1,29 +1,17 @@
-import { Request, Response } from "express"
 import cors from 'cors'
-import { getPlants, getPosts } from './routes/get'
-import { postAuth, postBeforeAfter, postPlant, postTechnologies, postThings } from './routes/post'
-import { postBeforeAfterValidator, postPlantValidator, postTechnologiesValidator, postThingsValidator } from './validations/validations'
-import authMiddleware from './middleware/middleware'
+import router from './routes/routes'
+import cookieParser from 'cookie-parser'
 
 const express = require('express')
 const app = express()
 
 app.use(express.json({ limit: '5mb' }))
-app.use(cors())
-// app.use(express.urlencoded({ limit: '50mb', extended: true }))
-
-app.get('/', (req: Request, res: Response) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-
-  res.json('main')
-})
-app.get('/plants', getPlants)
-app.get('/posts', getPosts)
-app.post('/login', postAuth)
-app.post('/plants', authMiddleware, postPlantValidator, postPlant)
-app.post('/beforeAfter', authMiddleware,  postBeforeAfterValidator, postBeforeAfter)
-app.post('/technologies', authMiddleware, postTechnologiesValidator, postTechnologies)
-app.post('/things', authMiddleware, postThingsValidator, postThings)
+app.use(cors({
+  credentials: true,
+  origin: process.env.CLIENT_URL || 'https://floroteka.netlify.app/'
+}))
+app.use(cookieParser())
+app.use('/', router)
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {

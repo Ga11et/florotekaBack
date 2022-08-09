@@ -26,3 +26,27 @@ export type AirtablePostRecordType = {
     type: postType
   }
 }
+
+export type AirtableAdminRecordType = {
+  id: string
+  fields: {
+    login: string
+    password: string
+  }
+}
+
+export type AirtableTokenRecordType = {
+  id: string
+  fields: {
+    id: string
+    token: string
+  }
+}
+
+export type AirtableTokenType = {
+  fields: {
+    id: string
+    token: string
+  }
+}
+

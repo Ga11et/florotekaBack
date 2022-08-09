@@ -4,26 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const cors_1 = __importDefault(require("cors"));
-const get_1 = require("./routes/get");
-const post_1 = require("./routes/post");
-const validations_1 = require("./validations/validations");
-const middleware_1 = __importDefault(require("./middleware/middleware"));
+const routes_1 = __importDefault(require("./routes/routes"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express = require('express');
 const app = express();
 app.use(express.json({ limit: '5mb' }));
-app.use((0, cors_1.default)());
-// app.use(express.urlencoded({ limit: '50mb', extended: true }))
-app.get('/', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json('main');
-});
-app.get('/plants', get_1.getPlants);
-app.get('/posts', get_1.getPosts);
-app.post('/login', post_1.postAuth);
-app.post('/plants', middleware_1.default, validations_1.postPlantValidator, post_1.postPlant);
-app.post('/beforeAfter', middleware_1.default, validations_1.postBeforeAfterValidator, post_1.postBeforeAfter);
-app.post('/technologies', middleware_1.default, validations_1.postTechnologiesValidator, post_1.postTechnologies);
-app.post('/things', middleware_1.default, validations_1.postThingsValidator, post_1.postThings);
+app.use((0, cors_1.default)({
+    credentials: true,
+    origin: process.env.CLIENT_URL || 'https://floroteka.netlify.app/'
+}));
+app.use((0, cookie_parser_1.default)());
+app.use('/', routes_1.default);
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Example app listening on port ${process.env.PORT}`);
