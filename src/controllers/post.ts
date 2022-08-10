@@ -59,7 +59,7 @@ export const postControllers = {
         const tokens = loginServises.generateTokens({ id: user.id, login: user.login })
   
         res.status(200)
-          .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'none' })
+          .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none' })
           .json({token: tokens.accessToken})
       })
     } catch (error) {
