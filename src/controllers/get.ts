@@ -75,7 +75,7 @@ export const getControllers = {
         const tokens = loginServises.generateTokens({ id: userData.id, login: userData.login })
       
         res.status(200)
-          .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', secure: true, domain: 'https://floroteka.netlify.app/' })
+          .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', secure: true })
           .json({token: tokens.accessToken})
       })
     } catch (error) {
