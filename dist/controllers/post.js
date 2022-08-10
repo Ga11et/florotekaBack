@@ -61,7 +61,7 @@ exports.postControllers = {
                     return res.status(400).json({ error: 'Неверно введенные данные' });
                 const tokens = loginServises_1.loginServises.generateTokens({ id: user.id, login: user.login });
                 res.status(200)
-                    .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, secure: true })
+                    .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'none' })
                     .json({ token: tokens.accessToken });
             });
         }
