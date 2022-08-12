@@ -18,25 +18,22 @@ export const loginServises = {
     return returnValue
   },
 
-  generateTokens: (data: { login: string, id: string }) => {
+  generateTokens: async (data: { login: string, id: string }) => {
     const accessToken = jwt.sign(data, process.env.JWT_TOKEN || 'secret', { expiresIn: '2h' })
     const refreshToken = jwt.sign(data, process.env.JWT_REFRESH_TOKEN || 'secret', { expiresIn: '30d' })
 
-    base('tokens').select().eachPage( async (records: AirtableTokenRecordType[]) => {
+    const records = await base('tokens').select().firstPage() as AirtableTokenRecordType[]
+    const existedRecord = records.find(el => data.id === el.fields.id)
+    if (existedRecord !== undefined) await base('tokens').destroy([existedRecord.id])
 
-      const existedRecord = records.find(el => data.id === el.fields.id)
-      
-      if (existedRecord !== undefined) await base('tokens').destroy([existedRecord.id])
-
-      const airtableData: AirtableTokenType ={
-        fields: {
-          id: data.id,
-          token: refreshToken
-        }
+    const airtableData: AirtableTokenType = {
+      fields: {
+        id: data.id,
+        token: refreshToken
       }
+    }
   
-      base('tokens').create([airtableData])
-    } )
+    await base('tokens').create([airtableData])
     
     return {
       accessToken,

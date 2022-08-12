@@ -25,20 +25,23 @@ exports.postControllers = {
             return;
         }
         try {
-            const cloudinariResponse = yield cloudinary_1.default.uploader.upload(req.body.data.img[0]);
+            const { name, latin, description, date, family, from, having, type, livingPlace, img } = req.body.data;
+            const promises = img.map((el) => __awaiter(void 0, void 0, void 0, function* () {
+                return yield cloudinary_1.default.uploader.upload(el);
+            }));
+            const cloudinaryResponse = yield Promise.all(promises);
             const airtableData = {
                 fields: {
-                    Name: req.body.data.name,
-                    latin: req.body.data.latin,
-                    description: req.body.data.description,
-                    date: req.body.data.date,
-                    family: req.body.data.family,
-                    from: req.body.data.from,
-                    having: req.body.data.having,
-                    type: req.body.data.type,
-                    livingPlace: req.body.data.livingPlace,
-                    id: req.body.data.id,
-                    image: [{ url: cloudinariResponse.url }]
+                    Name: name,
+                    latin: latin,
+                    description: description,
+                    date: date,
+                    family: family,
+                    from: from,
+                    having: having,
+                    type: type,
+                    livingPlace: livingPlace,
+                    image: cloudinaryResponse.map(resp => ({ url: resp.url }))
                 }
             };
             (0, airtable_1.default)('plants').create([airtableData]);
@@ -51,19 +54,18 @@ exports.postControllers = {
     postAuth: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { login, pass } = req.body.data;
-            (0, airtable_1.default)('admins').select().eachPage((records) => {
-                const usersData = loginServises_1.loginServises.getData(records);
-                const user = usersData.find(el => el.login === login);
-                if (!user)
-                    return res.status(400).json({ error: 'Неверно введенные данные' });
-                const isPassValid = bcrypt_1.default.compareSync(pass, user.pass);
-                if (!isPassValid)
-                    return res.status(400).json({ error: 'Неверно введенные данные' });
-                const tokens = loginServises_1.loginServises.generateTokens({ id: user.id, login: user.login });
-                res.status(200)
-                    .cookie('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', httpOnly: true, secure: true })
-                    .json({ token: tokens.accessToken });
-            });
+            const records = yield (0, airtable_1.default)('admins').select().firstPage();
+            const usersData = loginServises_1.loginServises.getData(records);
+            const user = usersData.find(el => el.login === login);
+            if (!user)
+                return res.status(400).json({ error: 'Неверно введенные данные' });
+            const isPassValid = bcrypt_1.default.compareSync(pass, user.pass);
+            if (!isPassValid)
+                return res.status(400).json({ error: 'Неверно введенные данные' });
+            const tokens = yield loginServises_1.loginServises.generateTokens({ id: user.id, login: user.login });
+            res.status(200)
+                .cookie('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', httpOnly: true, secure: true })
+                .json({ token: tokens.accessToken });
         }
         catch (error) {
             return res.status(400).json([{ param: 'data.origin', msg: error }]);

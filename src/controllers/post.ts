@@ -1,9 +1,8 @@
-import { AirtableAdminRecordType, AirtableGaleryRecordType, AirtableGaleryType } from './../models/airtableModels';
+import { AirtableAdminRecordType, AirtableGaleryRecordType, AirtableGaleryType, AirtablePlantType } from './../models/airtableModels';
 import { Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import base from '../airtable'
 import cloudinary from '../cloudinary'
-import { plantAirtableContentType } from '../models'
 import bcrypt from 'bcrypt'
 import { AirtablePostType } from '../models/airtableModels'
 import { loginServises } from '../servises/loginServises';
@@ -15,23 +14,30 @@ export const postControllers = {
       return
     }
     try {
-      const cloudinariResponse = await cloudinary.uploader.upload(req.body.data.img[0])
 
-      const airtableData: plantAirtableContentType = {
+      const { name, latin, description, date, family, from, having, type, livingPlace, img } = req.body.data
+
+      const promises = img.map( async (el: string) => {
+        return await cloudinary.uploader.upload(el)
+      } )
+
+      const cloudinaryResponse = await Promise.all(promises)
+
+      const airtableData: AirtablePlantType = {
         fields: {
-          Name: req.body.data.name,
-          latin: req.body.data.latin,
-          description: req.body.data.description,
-          date: req.body.data.date,
-          family: req.body.data.family,
-          from: req.body.data.from,
-          having: req.body.data.having,
-          type: req.body.data.type,
-          livingPlace: req.body.data.livingPlace,
-          id: req.body.data.id,
-          image: [{ url: cloudinariResponse.url }]
+          Name: name,
+          latin: latin,
+          description: description,
+          date: date,
+          family: family,
+          from: from,
+          having: having,
+          type: type,
+          livingPlace: livingPlace,
+          image: cloudinaryResponse.map( resp => ({ url: resp.url }))
         }
       }
+
       base('plants').create([airtableData])
 
 
@@ -46,22 +52,20 @@ export const postControllers = {
     try {
       const { login, pass } = req.body.data
 
-      base('admins').select().eachPage((records: AirtableAdminRecordType[]) => {
+      const records = await base('admins').select().firstPage() as AirtableAdminRecordType[]
+      const usersData = loginServises.getData(records)
 
-        const usersData = loginServises.getData(records)
+      const user = usersData.find(el => el.login === login)
+      if (!user) return res.status(400).json({ error: 'Неверно введенные данные' })
 
-        const user = usersData.find(el => el.login === login)
-        if (!user) return res.status(400).json({ error: 'Неверно введенные данные' })
+      const isPassValid = bcrypt.compareSync(pass, user.pass)
+      if (!isPassValid) return res.status(400).json({ error: 'Неверно введенные данные' })
 
-        const isPassValid = bcrypt.compareSync(pass, user.pass)
-        if (!isPassValid) return res.status(400).json({ error: 'Неверно введенные данные' })
+      const tokens = await loginServises.generateTokens({ id: user.id, login: user.login })
 
-        const tokens = loginServises.generateTokens({ id: user.id, login: user.login })
-
-        res.status(200)
-          .cookie('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', httpOnly: true, secure: true })
-          .json({ token: tokens.accessToken })
-      })
+      res.status(200)
+        .cookie('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', httpOnly: true, secure: true })
+        .json({ token: tokens.accessToken })
     } catch (error) {
       return res.status(400).json([{ param: 'data.origin', msg: error }])
     }

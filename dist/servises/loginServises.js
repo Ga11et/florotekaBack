@@ -28,24 +28,23 @@ exports.loginServises = {
         });
         return returnValue;
     },
-    generateTokens: (data) => {
+    generateTokens: (data) => __awaiter(void 0, void 0, void 0, function* () {
         const accessToken = jsonwebtoken_1.default.sign(data, process.env.JWT_TOKEN || 'secret', { expiresIn: '2h' });
         const refreshToken = jsonwebtoken_1.default.sign(data, process.env.JWT_REFRESH_TOKEN || 'secret', { expiresIn: '30d' });
-        (0, airtable_1.default)('tokens').select().eachPage((records) => __awaiter(void 0, void 0, void 0, function* () {
-            const existedRecord = records.find(el => data.id === el.fields.id);
-            if (existedRecord !== undefined)
-                yield (0, airtable_1.default)('tokens').destroy([existedRecord.id]);
-            const airtableData = {
-                fields: {
-                    id: data.id,
-                    token: refreshToken
-                }
-            };
-            (0, airtable_1.default)('tokens').create([airtableData]);
-        }));
+        const records = yield (0, airtable_1.default)('tokens').select().firstPage();
+        const existedRecord = records.find(el => data.id === el.fields.id);
+        if (existedRecord !== undefined)
+            yield (0, airtable_1.default)('tokens').destroy([existedRecord.id]);
+        const airtableData = {
+            fields: {
+                id: data.id,
+                token: refreshToken
+            }
+        };
+        yield (0, airtable_1.default)('tokens').create([airtableData]);
         return {
             accessToken,
             refreshToken
         };
-    }
+    })
 };

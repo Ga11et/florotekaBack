@@ -18,58 +18,42 @@ const tokenServises_1 = require("../servises/tokenServises");
 const loginServises_1 = require("../servises/loginServises");
 exports.getControllers = {
     getPlants: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        (0, airtable_1.default)('plants').select({
-            view: "Grid view"
-        }).eachPage((records) => {
-            const returnValue = records.map((el) => {
-                const plantItem = {
-                    name: el._rawJson.fields.Name,
-                    latin: el._rawJson.fields.latin,
-                    description: el._rawJson.fields.description,
-                    date: el._rawJson.fields.date,
-                    family: el._rawJson.fields.family,
-                    from: el._rawJson.fields.from,
-                    having: el._rawJson.fields.having,
-                    livingPlace: el._rawJson.fields.livingPlace,
-                    type: el._rawJson.fields.type,
-                    img: el._rawJson.fields.image.map((el) => el.url),
-                    id: el._rawJson.fields.id
-                };
-                return plantItem;
-            });
-            res.json(returnValue);
-        }, function done(err) {
-            if (err) {
-                res.json(err);
-                return;
-            }
+        const records = yield (0, airtable_1.default)('plants').select().firstPage();
+        const returnValue = records.map(el => {
+            const plantItem = {
+                id: el.id,
+                name: el.fields.Name,
+                latin: el.fields.latin,
+                description: el.fields.description,
+                date: el.fields.date,
+                family: el.fields.family,
+                from: el.fields.from,
+                having: el.fields.having,
+                livingPlace: el.fields.livingPlace,
+                type: el.fields.type,
+                img: el.fields.image.map(el => el.url),
+            };
+            return plantItem;
         });
+        res.json(returnValue);
     }),
     getPosts: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        (0, airtable_1.default)('posts').select({
-            view: "Grid view"
-        }).eachPage((records) => {
-            const returnValue = records.map(el => {
-                const postItem = {
-                    id: el.id,
-                    heading: el.fields.Name,
-                    description: el.fields.describtion,
-                    text: el.fields.text,
-                    date: el.fields.date,
-                    after: el.fields.after ? el.fields.after[0].url : '',
-                    before: el.fields.before ? el.fields.before[0].url : '',
-                    images: el.fields.images ? el.fields.images.map(el => el.url) : [],
-                    type: el.fields.type
-                };
-                return postItem;
-            });
-            res.json(returnValue);
-        }, function done(err) {
-            if (err) {
-                res.json(err);
-                return;
-            }
+        const records = yield (0, airtable_1.default)('posts').select().firstPage();
+        const returnValue = records.map(el => {
+            const postItem = {
+                id: el.id,
+                heading: el.fields.Name,
+                description: el.fields.description,
+                text: el.fields.text,
+                date: el.fields.date,
+                after: el.fields.after ? el.fields.after[0].url : '',
+                before: el.fields.before ? el.fields.before[0].url : '',
+                images: el.fields.images ? el.fields.images.map(el => el.url) : [],
+                type: el.fields.type
+            };
+            return postItem;
         });
+        res.json(returnValue);
     }),
     getPhotos: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const records = yield (0, airtable_1.default)('galery').select().firstPage();
@@ -84,19 +68,18 @@ exports.getControllers = {
             const { refreshToken } = req.cookies;
             const userData = tokenServises_1.tokenServises.checkRefreshToken(refreshToken);
             if (!userData.id)
-                return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован userdata" }]);
-            (0, airtable_1.default)('admins').select().eachPage((records) => {
-                const existedAdminRecord = records.find(el => el.id === userData.id);
-                if (!existedAdminRecord)
-                    return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован adminRecord" }]);
-                const tokens = loginServises_1.loginServises.generateTokens({ id: userData.id, login: userData.login });
-                res.status(200)
-                    .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', secure: true })
-                    .json({ token: tokens.accessToken });
-            });
+                return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован (refresh token is unavailable))" }]);
+            const records = yield (0, airtable_1.default)('admins').select().firstPage();
+            const existedAdminRecord = records.find(el => el.id === userData.id);
+            if (!existedAdminRecord)
+                return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован (admin is unavailable)" }]);
+            const tokens = yield loginServises_1.loginServises.generateTokens({ id: userData.id, login: userData.login });
+            res.status(200)
+                .cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', secure: true })
+                .json({ token: tokens.accessToken });
         }
         catch (error) {
-            return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован here?", error: error }]);
+            return res.status(401).json([{ param: 'data.origin', msg: "Не авторизован", error: error }]);
         }
     })
 };
