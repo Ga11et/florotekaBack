@@ -181,5 +181,37 @@ exports.postControllers = {
         catch (error) {
             return res.status(500).json({ msg: 'server mistake', error: error });
         }
-    })
+    }),
+    postStudyProject: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { heading, description, stepPhotos, stepTexts } = req.body.data;
+        if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
+            res.status(404).json((0, express_validator_1.validationResult)(req).array());
+            return;
+        }
+        try {
+            const stepPhotoUrls = yield stepPhotos.map((photo) => __awaiter(void 0, void 0, void 0, function* () {
+                const url = yield cloudinary_1.default.uploader.upload(photo).then(photo => photo.url);
+                return url;
+            }));
+            Promise.all(stepPhotoUrls).then(values => {
+                const airtableData = {
+                    fields: {
+                        Name: heading,
+                        describtion: description,
+                        text: stepTexts.join('\n\n'),
+                        date: (new Date).getTime(),
+                        after: [],
+                        before: [],
+                        images: values.map(image => ({ url: image })),
+                        type: 'studyProject'
+                    }
+                };
+                (0, airtable_1.default)('posts').create([airtableData]);
+                res.json('ok');
+            });
+        }
+        catch (error) {
+            res.status(500).json({ msg: 'server mistake', error: error });
+        }
+    }),
 };

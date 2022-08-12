@@ -44,7 +44,7 @@ export const getControllers = {
         const postItem: PostPropsType = {
           id: el.id,
           heading: el.fields.Name,
-          describtion: el.fields.describtion,
+          description: el.fields.describtion,
           text: el.fields.text,
           date: el.fields.date,
           after: el.fields.after ? el.fields.after[0].url : '',

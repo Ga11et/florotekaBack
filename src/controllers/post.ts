@@ -201,6 +201,46 @@ export const postControllers = {
     } catch (error) {
       return res.status(500).json({ msg: 'server mistake', error: error })
     }
-  }
+  },
+
+  postStudyProject: async (req: Request, res: Response) => {
+    const { heading, description, stepPhotos, stepTexts } = req.body.data
+    if (!validationResult(req).isEmpty()) {
+      res.status(404).json(validationResult(req).array())
+      return
+    }
+
+    try {
+      const stepPhotoUrls = await stepPhotos.map(async (photo: string) => {
+        const url = await cloudinary.uploader.upload(photo).then(photo => photo.url)
+        return url
+      })
+
+      Promise.all(stepPhotoUrls).then(values => {
+
+
+        const airtableData: AirtablePostType = {
+          fields: {
+            Name: heading,
+            describtion: description,
+            text: stepTexts.join('\n\n'),
+            date: (new Date).getTime(),
+            after: [],
+            before: [],
+            images: values.map(image => ({ url: image })),
+            type: 'studyProject'
+          }
+        }
+
+        base('posts').create([airtableData])
+
+        res.json('ok')
+      })
+    } catch (error) {
+      res.status(500).json({ msg: 'server mistake', error: error })
+    }
+
+
+  },
 }
 

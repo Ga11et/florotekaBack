@@ -23,6 +23,7 @@ router.post('/beforeAfter', authMiddleware,  postBeforeAfterValidator, postContr
 router.post('/technologies', authMiddleware, postTechnologiesValidator, postControllers.postTechnologies)
 router.post('/things', authMiddleware, postThingsValidator, postControllers.postThings)
 router.post('/galery', authMiddleware, postPhotoValidator, postControllers.postPhoto)
+router.post('/studyProject', authMiddleware, postTechnologiesValidator, postControllers.postStudyProject)
 
 
 export default router

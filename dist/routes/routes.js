@@ -24,4 +24,5 @@ router.post('/beforeAfter', authMiddleware_1.default, validations_2.postBeforeAf
 router.post('/technologies', authMiddleware_1.default, validations_2.postTechnologiesValidator, post_1.postControllers.postTechnologies);
 router.post('/things', authMiddleware_1.default, validations_2.postThingsValidator, post_1.postControllers.postThings);
 router.post('/galery', authMiddleware_1.default, validations_1.postPhotoValidator, post_1.postControllers.postPhoto);
+router.post('/studyProject', authMiddleware_1.default, validations_2.postTechnologiesValidator, post_1.postControllers.postStudyProject);
 exports.default = router;
