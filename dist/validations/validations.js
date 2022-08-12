@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postThingsValidator = exports.postTechnologiesValidator = exports.postBeforeAfterValidator = exports.postPlantValidator = void 0;
+exports.postPhotoValidator = exports.postThingsValidator = exports.postTechnologiesValidator = exports.postBeforeAfterValidator = exports.postPlantValidator = void 0;
 const express_validator_1 = require("express-validator");
 exports.postPlantValidator = [
     (0, express_validator_1.body)('data.name', 'Название должно существовать').isLength({ min: 1 }),
@@ -31,4 +31,7 @@ exports.postThingsValidator = [
     (0, express_validator_1.body)('data.describtion', 'Описание должно существовать').isLength({ min: 1 }),
     (0, express_validator_1.body)('data.photos', 'Хотя бы одно фото должно существовать').isLength({ min: 1 }),
     (0, express_validator_1.body)('data.photos', 'Все поля фотографий должны быть заполнены').custom((value) => value.findIndex((el) => el === '') === -1),
+];
+exports.postPhotoValidator = [
+    (0, express_validator_1.body)('data.photo', 'Фото должно существовать').isLength({ min: 1 }),
 ];

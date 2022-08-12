@@ -12,7 +12,6 @@ export type AirtablePostType = {
     type: postType
   }
 }
-
 export type AirtablePostRecordType = {
   id: string
   fields: {
@@ -35,6 +34,12 @@ export type AirtableAdminRecordType = {
   }
 }
 
+export type AirtableTokenType = {
+  fields: {
+    id: string
+    token: string
+  }
+}
 export type AirtableTokenRecordType = {
   id: string
   fields: {
@@ -43,10 +48,14 @@ export type AirtableTokenRecordType = {
   }
 }
 
-export type AirtableTokenType = {
+export type AirtableGaleryType = {
   fields: {
-    id: string
-    token: string
+    photos: { url: string }[]
   }
 }
-
+export type AirtableGaleryRecordType = {
+  id: string
+  fields: {
+    photos: { url: string }[]
+  }
+}

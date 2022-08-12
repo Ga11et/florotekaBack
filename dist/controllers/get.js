@@ -71,6 +71,14 @@ exports.getControllers = {
             }
         });
     }),
+    getPhotos: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const records = yield (0, airtable_1.default)('galery').select().firstPage();
+        const returnValue = records.map(record => ({
+            id: record.id,
+            image: record.fields.photos[0].url
+        }));
+        res.status(200).json(returnValue);
+    }),
     getRefresh: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { refreshToken } = req.cookies;

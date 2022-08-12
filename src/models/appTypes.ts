@@ -3,3 +3,7 @@ export type AdminType = {
   login: string
   pass: string
 }
+export type GaleryPhotoType = {
+  id: string
+  image: string
+}

@@ -1,3 +1,4 @@
+import { postPhotoValidator } from './../validations/validations';
 import { getControllers } from './../controllers/get';
 import { Request, Response } from 'express'
 import { postControllers } from '../controllers/post'
@@ -14,12 +15,14 @@ router.get('/', (req: Request, res: Response) => {
 })
 router.get('/plants', getControllers.getPlants)
 router.get('/posts', getControllers.getPosts)
+router.get('/galery', getControllers.getPhotos)
 router.get('/refresh', getControllers.getRefresh)
 router.post('/login', postControllers.postAuth)
 router.post('/plants', authMiddleware, postPlantValidator, postControllers.postPlant)
 router.post('/beforeAfter', authMiddleware,  postBeforeAfterValidator, postControllers.postBeforeAfter)
 router.post('/technologies', authMiddleware, postTechnologiesValidator, postControllers.postTechnologies)
 router.post('/things', authMiddleware, postThingsValidator, postControllers.postThings)
+router.post('/galery', authMiddleware, postPhotoValidator, postControllers.postPhoto)
 
 
 export default router

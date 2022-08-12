@@ -33,3 +33,7 @@ export const postThingsValidator = [
   body('data.photos', 'Хотя бы одно фото должно существовать').isLength({min: 1}),
   body('data.photos', 'Все поля фотографий должны быть заполнены').custom((value) => value.findIndex((el: string) => el === '') === -1),
 ]
+
+export const postPhotoValidator = [
+  body('data.photo', 'Фото должно существовать').isLength({min: 1}),
+]

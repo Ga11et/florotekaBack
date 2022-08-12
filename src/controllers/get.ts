@@ -1,10 +1,11 @@
-import { AirtableTokenRecordType, AirtableAdminRecordType } from './../models/airtableModels';
+import { AirtableTokenRecordType, AirtableAdminRecordType, AirtableGaleryRecordType } from './../models/airtableModels';
 import { Request, Response } from 'express';
 import base from '../airtable';
 import { plantPropsType, PostPropsType } from '../models';
 import { AirtablePostRecordType } from '../models/airtableModels';
 import { tokenServises } from '../servises/tokenServises';
 import { loginServises } from '../servises/loginServises';
+import { GaleryPhotoType } from '../models/appTypes';
 
 export const getControllers = {
   getPlants: async (req: Request, res: Response) => {
@@ -59,6 +60,19 @@ export const getControllers = {
     }, function done(err: any) {
       if (err) { res.json(err); return }
     });
+  },
+
+  getPhotos: async (req: Request, res: Response) => {
+
+    const records = await base('galery').select().firstPage() as AirtableGaleryRecordType[]
+
+    const returnValue: GaleryPhotoType[]  = records.map( record => ({
+      id: record.id,
+      image: record.fields.photos[0].url
+    }))
+
+    res.status(200).json(returnValue)
+   
   },
 
   getRefresh: async (req: Request, res: Response) => {
