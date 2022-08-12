@@ -18,7 +18,7 @@ router.get('/plants', get_1.getControllers.getPlants);
 router.get('/posts', get_1.getControllers.getPosts);
 router.get('/galery', get_1.getControllers.getPhotos);
 router.get('/refresh', get_1.getControllers.getRefresh);
-router.post('/login', post_1.postControllers.postAuth);
+router.post('/login', validations_1.postAuthValidator, post_1.postControllers.postAuth);
 router.post('/plants', authMiddleware_1.default, validations_2.postPlantValidator, post_1.postControllers.postPlant);
 router.post('/beforeAfter', authMiddleware_1.default, validations_2.postBeforeAfterValidator, post_1.postControllers.postBeforeAfter);
 router.post('/technologies', authMiddleware_1.default, validations_2.postTechnologiesValidator, post_1.postControllers.postTechnologies);

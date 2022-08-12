@@ -37,3 +37,8 @@ export const postThingsValidator = [
 export const postPhotoValidator = [
   body('data.photo', 'Фото должно существовать').isLength({min: 1}),
 ]
+
+export const postAuthValidator = [
+  body('data.login', 'Поле должно быть заполнено').isLength({min: 1}),
+  body('data.pass', 'Поле должно быть заполнено').isLength({min: 1}),
+]

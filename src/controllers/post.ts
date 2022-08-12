@@ -14,7 +14,6 @@ export const postControllers = {
       return
     }
     try {
-
       const { name, latin, description, date, family, from, having, type, livingPlace, img } = req.body.data
 
       const promises = img.map( async (el: string) => {
@@ -49,6 +48,10 @@ export const postControllers = {
   },
 
   postAuth: async (req: Request, res: Response) => {
+    if (!validationResult(req).isEmpty()) {
+      res.status(422).json(validationResult(req).array())
+      return
+    }
     try {
       const { login, pass } = req.body.data
 

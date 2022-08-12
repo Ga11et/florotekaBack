@@ -1,4 +1,4 @@
-import { postPhotoValidator } from './../validations/validations';
+import { postAuthValidator, postPhotoValidator } from './../validations/validations';
 import { getControllers } from './../controllers/get';
 import { Request, Response } from 'express'
 import { postControllers } from '../controllers/post'
@@ -17,7 +17,7 @@ router.get('/plants', getControllers.getPlants)
 router.get('/posts', getControllers.getPosts)
 router.get('/galery', getControllers.getPhotos)
 router.get('/refresh', getControllers.getRefresh)
-router.post('/login', postControllers.postAuth)
+router.post('/login', postAuthValidator, postControllers.postAuth)
 router.post('/plants', authMiddleware, postPlantValidator, postControllers.postPlant)
 router.post('/beforeAfter', authMiddleware,  postBeforeAfterValidator, postControllers.postBeforeAfter)
 router.post('/technologies', authMiddleware, postTechnologiesValidator, postControllers.postTechnologies)

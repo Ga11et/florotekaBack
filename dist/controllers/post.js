@@ -52,6 +52,10 @@ exports.postControllers = {
         }
     }),
     postAuth: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
+            res.status(422).json((0, express_validator_1.validationResult)(req).array());
+            return;
+        }
         try {
             const { login, pass } = req.body.data;
             const records = yield (0, airtable_1.default)('admins').select().firstPage();
