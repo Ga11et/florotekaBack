@@ -16,6 +16,7 @@ exports.loginServises = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const airtable_1 = __importDefault(require("../airtable"));
 require('dotenv').config({ path: process.cwd() + '/.env' });
+const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.loginServises = {
     getData: (records) => {
         const returnValue = records.map(el => {
@@ -46,5 +47,8 @@ exports.loginServises = {
             accessToken,
             refreshToken
         };
-    })
+    }),
+    checkPass: (pass, bcryptPass) => {
+        return bcrypt_1.default.compareSync(pass, bcryptPass);
+    }
 };

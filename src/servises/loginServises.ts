@@ -3,6 +3,7 @@ import base from '../airtable';
 import { AdminType } from '../models/appTypes';
 import { AirtableAdminRecordType, AirtableTokenRecordType, AirtableTokenType } from './../models/airtableModels';
 require('dotenv').config({path: process.cwd() + '/.env'})
+import bcrypt from 'bcrypt'
 
 export const loginServises = {
   getData: (records: AirtableAdminRecordType[]) => {
@@ -39,5 +40,9 @@ export const loginServises = {
       accessToken,
       refreshToken
     }
+  },
+
+  checkPass: (pass: string, bcryptPass: string) => {
+    return bcrypt.compareSync(pass, bcryptPass)
   }
 }

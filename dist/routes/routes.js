@@ -8,6 +8,7 @@ const get_1 = require("./../controllers/get");
 const post_1 = require("../controllers/post");
 const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
 const validations_2 = require("../validations/validations");
+const delete_1 = require("../controllers/delete");
 const Router = require('express').Router;
 const router = new Router();
 router.get('/', (req, res) => {
@@ -25,4 +26,5 @@ router.post('/technologies', authMiddleware_1.default, validations_2.postTechnol
 router.post('/things', authMiddleware_1.default, validations_2.postThingsValidator, post_1.postControllers.postThings);
 router.post('/galery', authMiddleware_1.default, validations_1.postPhotoValidator, post_1.postControllers.postPhoto);
 router.post('/studyProject', authMiddleware_1.default, validations_2.postTechnologiesValidator, post_1.postControllers.postStudyProject);
+router.delete('/plants', authMiddleware_1.default, delete_1.deleteControllers.deletePlant);
 exports.default = router;
