@@ -6,6 +6,7 @@ import { AirtablePostRecordType } from '../models/airtableModels';
 import { tokenServises } from '../servises/tokenServises';
 import { loginServises } from '../servises/loginServises';
 import { GaleryPhotoType, plantPropsType } from '../models/appTypes';
+import { mainServises } from '../servises/mainServises';
 
 export const getControllers = {
   getPlants: async (req: Request, res: Response) => {
@@ -23,7 +24,7 @@ export const getControllers = {
         having: el.fields.having,
         livingPlace: el.fields.livingPlace,
         type: el.fields.type,
-        img: el.fields.image.map(el => el.url),
+        img: mainServises.imageMapping(el.fields.image)
       }
       return plantItem
     })
@@ -42,9 +43,9 @@ export const getControllers = {
         description: el.fields.description,
         text: el.fields.text,
         date: el.fields.date,
-        after: el.fields.after ? el.fields.after[0].url : '',
-        before: el.fields.before ? el.fields.before[0].url : '',
-        images: el.fields.images ? el.fields.images.map(el => el.url) : [],
+        after: el.fields.after ? mainServises.imageMapping(el.fields.after)[0] : { small: '', full: '' },
+        before: el.fields.before ? mainServises.imageMapping(el.fields.before)[0] : { small: '', full: '' },
+        images: el.fields.images ? mainServises.imageMapping(el.fields.images) : [],
         type: el.fields.type
       }
       return postItem

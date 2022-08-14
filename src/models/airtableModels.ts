@@ -1,6 +1,14 @@
 import { postType } from '../models'
 import { PlantsType } from './appTypes'
 
+export type AirtableImageType = {
+  url: string
+  thumbnails: {
+    large: { url: string }
+    full: { url: string }
+  }
+}
+
 export type AirtablePostType = {
   fields: {
     Name: string
@@ -20,9 +28,9 @@ export type AirtablePostRecordType = {
     description: string
     text: string
     date: number
-    images: { url: string }[]
-    before: { url: string }[]
-    after: { url: string }[]
+    images: AirtableImageType[]
+    before: AirtableImageType[]
+    after: AirtableImageType[]
     type: postType
   }
 }
@@ -87,6 +95,20 @@ export type AirtablePlantRecordType = {
     livingPlace: string
     having: boolean
     type: PlantsType
-    image: { url: string }[]
+    image: AirtableImageType[]
+  }
+}
+export type AirtablePlantUpdateType = {
+  id: string
+  fields: {
+    Name: string
+    latin: string
+    description: string
+    date: string
+    family: string
+    from: string
+    livingPlace: string
+    having: boolean
+    type: PlantsType
   }
 }

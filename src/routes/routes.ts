@@ -1,3 +1,4 @@
+import { updateControllers } from './../controllers/update';
 import { postAuthValidator, postPhotoValidator } from './../validations/validations';
 import { getControllers } from './../controllers/get';
 import { Request, Response } from 'express'
@@ -28,6 +29,8 @@ router.post('/galery', authMiddleware, postPhotoValidator, postControllers.postP
 router.post('/studyProject', authMiddleware, postTechnologiesValidator, postControllers.postStudyProject)
 
 router.delete('/plants', authMiddleware, deleteControllers.deletePlant)
+
+router.put('/plants', authMiddleware, updateControllers.updatePlant)
 
 
 export default router

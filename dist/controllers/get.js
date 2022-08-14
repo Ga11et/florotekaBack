@@ -16,6 +16,7 @@ exports.getControllers = void 0;
 const airtable_1 = __importDefault(require("../airtable"));
 const tokenServises_1 = require("../servises/tokenServises");
 const loginServises_1 = require("../servises/loginServises");
+const mainServises_1 = require("../servises/mainServises");
 exports.getControllers = {
     getPlants: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const records = yield (0, airtable_1.default)('plants').select().firstPage();
@@ -31,7 +32,7 @@ exports.getControllers = {
                 having: el.fields.having,
                 livingPlace: el.fields.livingPlace,
                 type: el.fields.type,
-                img: el.fields.image.map(el => el.url),
+                img: mainServises_1.mainServises.imageMapping(el.fields.image)
             };
             return plantItem;
         });
@@ -46,9 +47,9 @@ exports.getControllers = {
                 description: el.fields.description,
                 text: el.fields.text,
                 date: el.fields.date,
-                after: el.fields.after ? el.fields.after[0].url : '',
-                before: el.fields.before ? el.fields.before[0].url : '',
-                images: el.fields.images ? el.fields.images.map(el => el.url) : [],
+                after: el.fields.after ? mainServises_1.mainServises.imageMapping(el.fields.after)[0] : { small: '', full: '' },
+                before: el.fields.before ? mainServises_1.mainServises.imageMapping(el.fields.before)[0] : { small: '', full: '' },
+                images: el.fields.images ? mainServises_1.mainServises.imageMapping(el.fields.images) : [],
                 type: el.fields.type
             };
             return postItem;

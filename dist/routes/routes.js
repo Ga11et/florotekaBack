@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const update_1 = require("./../controllers/update");
 const validations_1 = require("./../validations/validations");
 const get_1 = require("./../controllers/get");
 const post_1 = require("../controllers/post");
@@ -27,4 +28,5 @@ router.post('/things', authMiddleware_1.default, validations_2.postThingsValidat
 router.post('/galery', authMiddleware_1.default, validations_1.postPhotoValidator, post_1.postControllers.postPhoto);
 router.post('/studyProject', authMiddleware_1.default, validations_2.postTechnologiesValidator, post_1.postControllers.postStudyProject);
 router.delete('/plants', authMiddleware_1.default, delete_1.deleteControllers.deletePlant);
+router.put('/plants', authMiddleware_1.default, update_1.updateControllers.updatePlant);
 exports.default = router;

@@ -1,3 +1,5 @@
+import { ImageType } from './models/appTypes'
+
 export type postType = 'studyProject' | 'scienceActivity' | 'beforeAfter' | 'technologies' | 'things'
 
 export type beforeAfterPostPropsType = {
@@ -14,9 +16,9 @@ export type PostPropsType = {
   description: string
   date: number
   text: string
-  before: string
-  after: string
-  images: string[]
+  before: ImageType
+  after: ImageType
+  images: ImageType[]
   type: postType
 }
 export type beboreAfterAirtableContentType = {

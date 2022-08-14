@@ -1,3 +1,8 @@
+export type ImageType = {
+  small: string
+  full: string
+}
+
 export type AdminType = {
   id: string
   login: string
@@ -17,7 +22,7 @@ export type plantPropsType = {
   from: string
   livingPlace: string
   having: boolean
-  img: string[]
+  img: ImageType[]
   type: PlantsType
 }
 
