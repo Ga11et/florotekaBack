@@ -17,7 +17,7 @@ export const postControllers = {
       const { name, latin, description, date, family, from, having, type, livingPlace, img } = req.body.data
 
       const promises = img.map( async (el: string) => {
-        return await cloudinary.uploader.upload(el)
+        return await cloudinary.uploader.upload(el, { folder: 'floroteka' })
       } )
 
       const cloudinaryResponse = await Promise.all(promises)
@@ -37,8 +37,7 @@ export const postControllers = {
         }
       }
 
-      base('plants').create([airtableData])
-
+      await base('plants').create([airtableData])
 
       res.json('ok')
     } catch (err) {
@@ -81,15 +80,15 @@ export const postControllers = {
       return
     }
     try {
-      const beforeUrl = await cloudinary.uploader.upload(before)
+      const beforeUrl = await cloudinary.uploader.upload(before, { folder: 'floroteka' })
         .then(resp => resp.url)
-      const afterUrl = await cloudinary.uploader.upload(after)
+      const afterUrl = await cloudinary.uploader.upload(after, { folder: 'floroteka' })
         .then(resp => resp.url)
 
       const airtableData: AirtablePostType = {
         fields: {
           Name: heading,
-          describtion: description,
+          description: description,
           text: description,
           date: (new Date).getTime(),
           after: [{ url: afterUrl }],
@@ -98,12 +97,13 @@ export const postControllers = {
           type: 'beforeAfter'
         }
       }
-      base('posts').create([airtableData])
+
+      await base('posts').create([airtableData])
+
+      res.json('ok')
     } catch (error) {
       res.status(500).json({ msg: 'server mistake', error: error })
     }
-
-    res.json('ok')
   },
 
   postTechnologies: async (req: Request, res: Response) => {
@@ -115,30 +115,28 @@ export const postControllers = {
 
     try {
       const stepPhotoUrls = await stepPhotos.map(async (photo: string) => {
-        const url = await cloudinary.uploader.upload(photo).then(photo => photo.url)
+        const url = await cloudinary.uploader.upload(photo, { folder: 'floroteka' }).then(photo => photo.url)
         return url
       })
 
-      Promise.all(stepPhotoUrls).then(values => {
+      const values = await Promise.all(stepPhotoUrls)
 
-
-        const airtableData: AirtablePostType = {
-          fields: {
-            Name: heading,
-            describtion: description,
-            text: stepTexts.join('\n\n'),
-            date: (new Date).getTime(),
-            after: [],
-            before: [],
-            images: values.map(image => ({ url: image })),
-            type: 'technologies'
-          }
+      const airtableData: AirtablePostType = {
+        fields: {
+          Name: heading,
+          description: description,
+          text: stepTexts.join('\n\n'),
+          date: (new Date).getTime(),
+          after: [],
+          before: [],
+          images: values.map(image => ({ url: image })),
+          type: 'technologies'
         }
+      }
 
-        base('posts').create([airtableData])
+      await base('posts').create([airtableData])
 
-        res.json('ok')
-      })
+      res.json('ok')
     } catch (error) {
       res.status(500).json({ msg: 'server mistake', error: error })
     }
@@ -147,7 +145,7 @@ export const postControllers = {
   },
 
   postThings: async (req: Request, res: Response) => {
-    const { heading, describtion, photos } = req.body.data
+    const { heading, description, photos } = req.body.data
 
     if (!validationResult(req).isEmpty()) {
       res.status(404).json(validationResult(req).array())
@@ -156,29 +154,27 @@ export const postControllers = {
 
     try {
       const photoUrls = await photos.map((photo: string) => {
-        return cloudinary.uploader.upload(photo)
+        return cloudinary.uploader.upload(photo, { folder: 'floroteka' })
       })
 
-      Promise.all(photoUrls).then(urls => {
+      const urls = await Promise.all(photoUrls)
 
-        const airtableData: AirtablePostType = {
-          fields: {
-            Name: heading,
-            describtion: describtion,
-            text: '',
-            date: (new Date).getTime(),
-            after: [],
-            before: [],
-            images: urls.map(image => ({ url: image.url })),
-            type: 'things'
-          }
+      const airtableData: AirtablePostType = {
+        fields: {
+          Name: heading,
+          description: description,
+          text: '',
+          date: (new Date).getTime(),
+          after: [],
+          before: [],
+          images: urls.map(image => ({ url: image.url })),
+          type: 'things'
         }
+      }
 
-        base('posts').create([airtableData])
+      await base('posts').create([airtableData])
 
-        res.json('ok')
-      })
-
+      res.json('ok')
     } catch (error) {
       return res.status(500).json({ msg: 'server mistake', error: error })
     }
@@ -193,7 +189,7 @@ export const postControllers = {
     }
 
     try {
-      const photoUrl = await cloudinary.uploader.upload(photo)
+      const photoUrl = await cloudinary.uploader.upload(photo, { folder: 'floroteka' })
 
       const airtableData: AirtableGaleryType = {
         fields: {
@@ -201,10 +197,9 @@ export const postControllers = {
         }
       }
 
-      base('galery').create([airtableData])
+      await base('galery').create([airtableData])
       
       res.json('ok')
-
     } catch (error) {
       return res.status(500).json({ msg: 'server mistake', error: error })
     }
@@ -219,30 +214,28 @@ export const postControllers = {
 
     try {
       const stepPhotoUrls = await stepPhotos.map(async (photo: string) => {
-        const url = await cloudinary.uploader.upload(photo).then(photo => photo.url)
+        const url = await cloudinary.uploader.upload(photo, { folder: 'floroteka' }).then(photo => photo.url)
         return url
       })
 
-      Promise.all(stepPhotoUrls).then(values => {
+      const values = await Promise.all(stepPhotoUrls)
 
-
-        const airtableData: AirtablePostType = {
-          fields: {
-            Name: heading,
-            describtion: description,
-            text: stepTexts.join('\n\n'),
-            date: (new Date).getTime(),
-            after: [],
-            before: [],
-            images: values.map(image => ({ url: image })),
-            type: 'studyProject'
-          }
+      const airtableData: AirtablePostType = {
+        fields: {
+          Name: heading,
+          description: description,
+          text: stepTexts.join('\n\n'),
+          date: (new Date).getTime(),
+          after: [],
+          before: [],
+          images: values.map(image => ({ url: image })),
+          type: 'studyProject'
         }
+      }
 
-        base('posts').create([airtableData])
+      await base('posts').create([airtableData])
 
-        res.json('ok')
-      })
+      res.json('ok')
     } catch (error) {
       res.status(500).json({ msg: 'server mistake', error: error })
     }

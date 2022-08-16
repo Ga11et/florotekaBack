@@ -27,7 +27,7 @@ exports.postControllers = {
         try {
             const { name, latin, description, date, family, from, having, type, livingPlace, img } = req.body.data;
             const promises = img.map((el) => __awaiter(void 0, void 0, void 0, function* () {
-                return yield cloudinary_1.default.uploader.upload(el);
+                return yield cloudinary_1.default.uploader.upload(el, { folder: 'floroteka' });
             }));
             const cloudinaryResponse = yield Promise.all(promises);
             const airtableData = {
@@ -44,7 +44,7 @@ exports.postControllers = {
                     image: cloudinaryResponse.map(resp => ({ url: resp.url }))
                 }
             };
-            (0, airtable_1.default)('plants').create([airtableData]);
+            yield (0, airtable_1.default)('plants').create([airtableData]);
             res.json('ok');
         }
         catch (err) {
@@ -82,14 +82,14 @@ exports.postControllers = {
             return;
         }
         try {
-            const beforeUrl = yield cloudinary_1.default.uploader.upload(before)
+            const beforeUrl = yield cloudinary_1.default.uploader.upload(before, { folder: 'floroteka' })
                 .then(resp => resp.url);
-            const afterUrl = yield cloudinary_1.default.uploader.upload(after)
+            const afterUrl = yield cloudinary_1.default.uploader.upload(after, { folder: 'floroteka' })
                 .then(resp => resp.url);
             const airtableData = {
                 fields: {
                     Name: heading,
-                    describtion: description,
+                    description: description,
                     text: description,
                     date: (new Date).getTime(),
                     after: [{ url: afterUrl }],
@@ -98,12 +98,12 @@ exports.postControllers = {
                     type: 'beforeAfter'
                 }
             };
-            (0, airtable_1.default)('posts').create([airtableData]);
+            yield (0, airtable_1.default)('posts').create([airtableData]);
+            res.json('ok');
         }
         catch (error) {
             res.status(500).json({ msg: 'server mistake', error: error });
         }
-        res.json('ok');
     }),
     postTechnologies: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { heading, description, stepPhotos, stepTexts } = req.body.data;
@@ -113,56 +113,54 @@ exports.postControllers = {
         }
         try {
             const stepPhotoUrls = yield stepPhotos.map((photo) => __awaiter(void 0, void 0, void 0, function* () {
-                const url = yield cloudinary_1.default.uploader.upload(photo).then(photo => photo.url);
+                const url = yield cloudinary_1.default.uploader.upload(photo, { folder: 'floroteka' }).then(photo => photo.url);
                 return url;
             }));
-            Promise.all(stepPhotoUrls).then(values => {
-                const airtableData = {
-                    fields: {
-                        Name: heading,
-                        describtion: description,
-                        text: stepTexts.join('\n\n'),
-                        date: (new Date).getTime(),
-                        after: [],
-                        before: [],
-                        images: values.map(image => ({ url: image })),
-                        type: 'technologies'
-                    }
-                };
-                (0, airtable_1.default)('posts').create([airtableData]);
-                res.json('ok');
-            });
+            const values = yield Promise.all(stepPhotoUrls);
+            const airtableData = {
+                fields: {
+                    Name: heading,
+                    description: description,
+                    text: stepTexts.join('\n\n'),
+                    date: (new Date).getTime(),
+                    after: [],
+                    before: [],
+                    images: values.map(image => ({ url: image })),
+                    type: 'technologies'
+                }
+            };
+            yield (0, airtable_1.default)('posts').create([airtableData]);
+            res.json('ok');
         }
         catch (error) {
             res.status(500).json({ msg: 'server mistake', error: error });
         }
     }),
     postThings: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { heading, describtion, photos } = req.body.data;
+        const { heading, description, photos } = req.body.data;
         if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
             res.status(404).json((0, express_validator_1.validationResult)(req).array());
             return;
         }
         try {
             const photoUrls = yield photos.map((photo) => {
-                return cloudinary_1.default.uploader.upload(photo);
+                return cloudinary_1.default.uploader.upload(photo, { folder: 'floroteka' });
             });
-            Promise.all(photoUrls).then(urls => {
-                const airtableData = {
-                    fields: {
-                        Name: heading,
-                        describtion: describtion,
-                        text: '',
-                        date: (new Date).getTime(),
-                        after: [],
-                        before: [],
-                        images: urls.map(image => ({ url: image.url })),
-                        type: 'things'
-                    }
-                };
-                (0, airtable_1.default)('posts').create([airtableData]);
-                res.json('ok');
-            });
+            const urls = yield Promise.all(photoUrls);
+            const airtableData = {
+                fields: {
+                    Name: heading,
+                    description: description,
+                    text: '',
+                    date: (new Date).getTime(),
+                    after: [],
+                    before: [],
+                    images: urls.map(image => ({ url: image.url })),
+                    type: 'things'
+                }
+            };
+            yield (0, airtable_1.default)('posts').create([airtableData]);
+            res.json('ok');
         }
         catch (error) {
             return res.status(500).json({ msg: 'server mistake', error: error });
@@ -175,13 +173,13 @@ exports.postControllers = {
             return;
         }
         try {
-            const photoUrl = yield cloudinary_1.default.uploader.upload(photo);
+            const photoUrl = yield cloudinary_1.default.uploader.upload(photo, { folder: 'floroteka' });
             const airtableData = {
                 fields: {
                     photos: [{ url: photoUrl.url }]
                 }
             };
-            (0, airtable_1.default)('galery').create([airtableData]);
+            yield (0, airtable_1.default)('galery').create([airtableData]);
             res.json('ok');
         }
         catch (error) {
@@ -196,25 +194,24 @@ exports.postControllers = {
         }
         try {
             const stepPhotoUrls = yield stepPhotos.map((photo) => __awaiter(void 0, void 0, void 0, function* () {
-                const url = yield cloudinary_1.default.uploader.upload(photo).then(photo => photo.url);
+                const url = yield cloudinary_1.default.uploader.upload(photo, { folder: 'floroteka' }).then(photo => photo.url);
                 return url;
             }));
-            Promise.all(stepPhotoUrls).then(values => {
-                const airtableData = {
-                    fields: {
-                        Name: heading,
-                        describtion: description,
-                        text: stepTexts.join('\n\n'),
-                        date: (new Date).getTime(),
-                        after: [],
-                        before: [],
-                        images: values.map(image => ({ url: image })),
-                        type: 'studyProject'
-                    }
-                };
-                (0, airtable_1.default)('posts').create([airtableData]);
-                res.json('ok');
-            });
+            const values = yield Promise.all(stepPhotoUrls);
+            const airtableData = {
+                fields: {
+                    Name: heading,
+                    description: description,
+                    text: stepTexts.join('\n\n'),
+                    date: (new Date).getTime(),
+                    after: [],
+                    before: [],
+                    images: values.map(image => ({ url: image })),
+                    type: 'studyProject'
+                }
+            };
+            yield (0, airtable_1.default)('posts').create([airtableData]);
+            res.json('ok');
         }
         catch (error) {
             res.status(500).json({ msg: 'server mistake', error: error });

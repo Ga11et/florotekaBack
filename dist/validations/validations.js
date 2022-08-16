@@ -28,7 +28,7 @@ exports.postTechnologiesValidator = [
 ];
 exports.postThingsValidator = [
     (0, express_validator_1.body)('data.heading', 'Заголовок должен существовать').isLength({ min: 1 }),
-    (0, express_validator_1.body)('data.describtion', 'Описание должно существовать').isLength({ min: 1 }),
+    (0, express_validator_1.body)('data.description', 'Описание должно существовать').isLength({ min: 1 }),
     (0, express_validator_1.body)('data.photos', 'Хотя бы одно фото должно существовать').isLength({ min: 1 }),
     (0, express_validator_1.body)('data.photos', 'Все поля фотографий должны быть заполнены').custom((value) => value.findIndex((el) => el === '') === -1),
 ];

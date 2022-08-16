@@ -12,7 +12,7 @@ export type AirtableImageType = {
 export type AirtablePostType = {
   fields: {
     Name: string
-    describtion: string
+    description: string
     text: string
     date: number
     images: { url: string }[]

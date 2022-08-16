@@ -29,7 +29,7 @@ export const postTechnologiesValidator = [
 
 export const postThingsValidator = [
   body('data.heading', 'Заголовок должен существовать').isLength({min: 1}),
-  body('data.describtion', 'Описание должно существовать').isLength({min: 1}),
+  body('data.description', 'Описание должно существовать').isLength({min: 1}),
   body('data.photos', 'Хотя бы одно фото должно существовать').isLength({min: 1}),
   body('data.photos', 'Все поля фотографий должны быть заполнены').custom((value) => value.findIndex((el: string) => el === '') === -1),
 ]
