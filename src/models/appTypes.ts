@@ -1,4 +1,5 @@
 export type ImageType = {
+  id: string
   small: string
   full: string
 }

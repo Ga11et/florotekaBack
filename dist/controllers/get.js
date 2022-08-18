@@ -47,8 +47,8 @@ exports.getControllers = {
                 description: el.fields.description,
                 text: el.fields.text,
                 date: el.fields.date,
-                after: el.fields.after ? mainServises_1.mainServises.imageMapping(el.fields.after)[0] : { small: '', full: '' },
-                before: el.fields.before ? mainServises_1.mainServises.imageMapping(el.fields.before)[0] : { small: '', full: '' },
+                after: el.fields.after ? mainServises_1.mainServises.imageMapping(el.fields.after)[0] : { small: '', full: '', id: '' },
+                before: el.fields.before ? mainServises_1.mainServises.imageMapping(el.fields.before)[0] : { small: '', full: '', id: '' },
                 images: el.fields.images ? mainServises_1.mainServises.imageMapping(el.fields.images) : [],
                 type: el.fields.type
             };

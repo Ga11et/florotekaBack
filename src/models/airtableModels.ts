@@ -2,6 +2,7 @@ import { postType } from '../models'
 import { PlantsType } from './appTypes'
 
 export type AirtableImageType = {
+  id: string
   url: string
   thumbnails: {
     large: { url: string }
