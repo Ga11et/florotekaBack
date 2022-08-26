@@ -1,5 +1,5 @@
 import { updateControllers } from './../controllers/update';
-import { postAuthValidator, postPhotoValidator } from './../validations/validations';
+import { postAuthValidator, postPhotoValidator, postScienceActivityValidator } from './../validations/validations';
 import { getControllers } from './../controllers/get';
 import { Request, Response } from 'express'
 import { postControllers } from '../controllers/post'
@@ -27,6 +27,7 @@ router.post('/technologies', authMiddleware, postTechnologiesValidator, postCont
 router.post('/things', authMiddleware, postThingsValidator, postControllers.postThings)
 router.post('/galery', authMiddleware, postPhotoValidator, postControllers.postPhoto)
 router.post('/studyProject', authMiddleware, postTechnologiesValidator, postControllers.postStudyProject)
+router.post('/scienceActivity', authMiddleware, postScienceActivityValidator, postControllers.postScienceActivity)
 
 router.delete('/plants', authMiddleware, deleteControllers.deletePlant)
 

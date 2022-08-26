@@ -60,7 +60,8 @@ exports.getControllers = {
         const records = yield (0, airtable_1.default)('galery').select().firstPage();
         const returnValue = records.map(record => ({
             id: record.id,
-            image: record.fields.photos[0].url
+            image: mainServises_1.mainServises.imageMapping(record.fields.photos)[0],
+            lastModified: record.fields.lastModified
         }));
         res.status(200).json(returnValue);
     }),

@@ -61,12 +61,14 @@ export type AirtableTokenRecordType = {
 export type AirtableGaleryType = {
   fields: {
     photos: { url: string }[]
+    lastModified: string
   }
 }
 export type AirtableGaleryRecordType = {
   id: string
   fields: {
-    photos: { url: string }[]
+    photos: AirtableImageType[]
+    lastModified: string
   }
 }
 

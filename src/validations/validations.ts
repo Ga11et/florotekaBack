@@ -42,3 +42,9 @@ export const postAuthValidator = [
   body('data.login', 'Поле должно быть заполнено').isLength({min: 1}),
   body('data.pass', 'Поле должно быть заполнено').isLength({min: 1}),
 ]
+
+export const postScienceActivityValidator = [
+  body('data.heading', 'Заголовок должен существовать').isLength({min: 1}),
+  body('data.description', 'Описание должно существовать').isLength({min: 1}),
+  body('data.img', 'Хотя бы одно фото должно существовать').isLength({min: 1}),
+]

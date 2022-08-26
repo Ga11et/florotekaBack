@@ -1,3 +1,4 @@
+import { galeryRequest, scienceActivityRequest } from './../models/requestTypes';
 import { AirtableAdminRecordType, AirtableGaleryRecordType, AirtableGaleryType, AirtablePlantType } from './../models/airtableModels';
 import { Request, Response } from 'express'
 import { validationResult } from 'express-validator'
@@ -6,6 +7,7 @@ import cloudinary from '../cloudinary'
 import bcrypt from 'bcrypt'
 import { AirtablePostType } from '../models/airtableModels'
 import { loginServises } from '../servises/loginServises';
+import { UniversalResponseType } from '../models/responseTypes';
 
 export const postControllers = {
   postPlant: async (req: Request, res: Response) => {
@@ -180,28 +182,26 @@ export const postControllers = {
     }
   },
 
-  postPhoto: async (req: Request, res: Response) => {
-    const { photo } = req.body.data
+  postPhoto: async (req: Request<{}, {}, galeryRequest>, res: Response<UniversalResponseType>) => {
+    const { photo, lastModified } = req.body.data
 
-    if (!validationResult(req).isEmpty()) {
-      res.status(404).json(validationResult(req).array())
-      return
-    }
+    if (!validationResult(req).isEmpty()) return res.status(404).json(validationResult(req).array())
 
     try {
       const photoUrl = await cloudinary.uploader.upload(photo, { folder: 'floroteka' })
 
       const airtableData: AirtableGaleryType = {
         fields: {
-          photos: [{ url: photoUrl.url }]
+          photos: [{ url: photoUrl.url }],
+          lastModified: lastModified.toString()
         }
       }
 
       await base('galery').create([airtableData])
       
-      res.json('ok')
+      return res.json('ok')
     } catch (error) {
-      return res.status(500).json({ msg: 'server mistake', error: error })
+      return res.status(500).json([{ param: 'data.origin', msg: 'server mistake' }])
     }
   },
 
@@ -242,5 +242,33 @@ export const postControllers = {
 
 
   },
+
+  async postScienceActivity (req: Request<{}, {}, scienceActivityRequest>, res: Response<UniversalResponseType>) {
+    const { heading, description, img } = req.body.data
+    if (!validationResult(req).isEmpty()) return res.status(404).json(validationResult(req).array())
+
+    try {
+      const imageUrl = await cloudinary.uploader.upload(img).then(resp => resp.url)
+
+      const airtableData: AirtablePostType = {
+        fields: {
+          Name: heading,
+          description: description,
+          text: '',
+          date: (new Date).getTime(),
+          after: [],
+          before: [],
+          images: [{ url: imageUrl }],
+          type: 'scienceActivity'
+        }
+      }
+
+      await base('posts').create([airtableData])
+      
+      return res.json('ok')
+    } catch (error) {
+      return res.status(500).json([{ param: 'data.origin', msg: 'server mistake' }])
+    }
+  }
 }
 

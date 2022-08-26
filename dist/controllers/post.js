@@ -167,23 +167,22 @@ exports.postControllers = {
         }
     }),
     postPhoto: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { photo } = req.body.data;
-        if (!(0, express_validator_1.validationResult)(req).isEmpty()) {
-            res.status(404).json((0, express_validator_1.validationResult)(req).array());
-            return;
-        }
+        const { photo, lastModified } = req.body.data;
+        if (!(0, express_validator_1.validationResult)(req).isEmpty())
+            return res.status(404).json((0, express_validator_1.validationResult)(req).array());
         try {
             const photoUrl = yield cloudinary_1.default.uploader.upload(photo, { folder: 'floroteka' });
             const airtableData = {
                 fields: {
-                    photos: [{ url: photoUrl.url }]
+                    photos: [{ url: photoUrl.url }],
+                    lastModified: lastModified.toString()
                 }
             };
             yield (0, airtable_1.default)('galery').create([airtableData]);
-            res.json('ok');
+            return res.json('ok');
         }
         catch (error) {
-            return res.status(500).json({ msg: 'server mistake', error: error });
+            return res.status(500).json([{ param: 'data.origin', msg: 'server mistake' }]);
         }
     }),
     postStudyProject: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -217,4 +216,31 @@ exports.postControllers = {
             res.status(500).json({ msg: 'server mistake', error: error });
         }
     }),
+    postScienceActivity(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { heading, description, img } = req.body.data;
+            if (!(0, express_validator_1.validationResult)(req).isEmpty())
+                return res.status(404).json((0, express_validator_1.validationResult)(req).array());
+            try {
+                const imageUrl = yield cloudinary_1.default.uploader.upload(img).then(resp => resp.url);
+                const airtableData = {
+                    fields: {
+                        Name: heading,
+                        description: description,
+                        text: '',
+                        date: (new Date).getTime(),
+                        after: [],
+                        before: [],
+                        images: [{ url: imageUrl }],
+                        type: 'scienceActivity'
+                    }
+                };
+                yield (0, airtable_1.default)('posts').create([airtableData]);
+                return res.json('ok');
+            }
+            catch (error) {
+                return res.status(500).json([{ param: 'data.origin', msg: 'server mistake' }]);
+            }
+        });
+    }
 };

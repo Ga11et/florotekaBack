@@ -11,7 +11,8 @@ export type AdminType = {
 }
 export type GaleryPhotoType = {
   id: string
-  image: string
+  image: ImageType
+  lastModified: string
 }
 export type plantPropsType = {
   id: string
