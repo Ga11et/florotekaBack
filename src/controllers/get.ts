@@ -56,16 +56,24 @@ export const getControllers = {
 
   getPhotos: async (req: Request, res: Response) => {
 
-    const records = await base('galery').select().firstPage() as AirtableGaleryRecordType[]
+    let records = [] as AirtableGaleryRecordType[]
 
-    const returnValue: GaleryPhotoType[]  = records.map( record => ({
-      id: record.id,
-      image: mainServises.imageMapping(record.fields.photos)[0],
-      lastModified: record.fields.lastModified
-    }))
+    const processPage = (pageRecords: AirtableGaleryRecordType[], fetchNext: Function) => {
+      records = [...records, ...pageRecords]
+      fetchNext()
+    }
 
-    res.status(200).json(returnValue)
-   
+    const finishProcessing = () => {
+      const returnValue: GaleryPhotoType[]  = records.map( record => ({
+        id: record.id,
+        image: mainServises.imageMapping(record.fields.photos)[0],
+        lastModified: record.fields.lastModified
+      }))
+  
+      res.status(200).json(returnValue)
+    }
+
+    await base('galery').select().eachPage(processPage, finishProcessing) 
   },
 
   getRefresh: async (req: Request, res: Response) => {

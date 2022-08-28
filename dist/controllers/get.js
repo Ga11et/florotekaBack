@@ -57,13 +57,20 @@ exports.getControllers = {
         res.json(returnValue);
     }),
     getPhotos: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const records = yield (0, airtable_1.default)('galery').select().firstPage();
-        const returnValue = records.map(record => ({
-            id: record.id,
-            image: mainServises_1.mainServises.imageMapping(record.fields.photos)[0],
-            lastModified: record.fields.lastModified
-        }));
-        res.status(200).json(returnValue);
+        let records = [];
+        const processPage = (pageRecords, fetchNext) => {
+            records = [...records, ...pageRecords];
+            fetchNext();
+        };
+        const finishProcessing = () => {
+            const returnValue = records.map(record => ({
+                id: record.id,
+                image: mainServises_1.mainServises.imageMapping(record.fields.photos)[0],
+                lastModified: record.fields.lastModified
+            }));
+            res.status(200).json(returnValue);
+        };
+        yield (0, airtable_1.default)('galery').select().eachPage(processPage, finishProcessing);
     }),
     getRefresh: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
