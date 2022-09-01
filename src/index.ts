@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser'
 const express = require('express')
 const app = express()
 
-app.use(express.json({ limit: '10mb' }))
+app.use(express.json({ limit: '20mb' }))
 app.use(cors({
   credentials: true,
   origin: process.env.CLIENT_URL || 'https://floroteka.netlify.app/'
