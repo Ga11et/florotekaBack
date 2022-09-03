@@ -31,5 +31,25 @@ exports.deleteControllers = {
         catch (error) {
             return res.status(500).json([{ param: 'data.origin', msg: "Серверная ошибка", error: error }]);
         }
-    })
+    }),
+    post(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, pass } = req.body.data;
+                if (!pass)
+                    return res.status(422).json([{ param: 'data.origin', msg: "Не отправлен пароль" }]);
+                const admin = yield (0, airtable_1.default)('admins').find(req.body.user.id);
+                if (!admin)
+                    return res.status(422).json([{ param: 'data.origin', msg: "Не получить найти роль" }]);
+                const isPassValid = loginServises_1.loginServises.checkPass(pass, admin.fields.password);
+                if (!isPassValid)
+                    return res.status(422).json([{ param: 'data.origin', msg: "Введен неправильный пароль" }]);
+                yield (0, airtable_1.default)('posts').destroy([id]);
+                return res.status(200).json('ok');
+            }
+            catch (error) {
+                return res.status(500).json([{ param: 'data.origin', msg: `Серверная ошибка ${error}` }]);
+            }
+        });
+    }
 };

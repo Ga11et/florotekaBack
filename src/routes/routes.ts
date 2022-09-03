@@ -30,6 +30,7 @@ router.post('/studyProject', authMiddleware, postTechnologiesValidator, postCont
 router.post('/scienceActivity', authMiddleware, postScienceActivityValidator, postControllers.postScienceActivity)
 
 router.delete('/plants', authMiddleware, deleteControllers.deletePlant)
+router.delete('/posts', authMiddleware, deleteControllers.post)
 
 router.put('/plants', authMiddleware, updateControllers.updatePlant)
 

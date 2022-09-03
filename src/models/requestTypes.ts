@@ -1,3 +1,5 @@
+import { AdminType } from './appTypes'
+
 export type scienceActivityRequest = {
   data: {
     heading: string
@@ -10,4 +12,11 @@ export type galeryRequest = {
     photo: string
     lastModified: string
   }
+}
+export type plantDeletingRequest = {
+  data: {
+    id: string
+    pass: string
+  }
+  user: AdminType
 }

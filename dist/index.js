@@ -8,7 +8,7 @@ const routes_1 = __importDefault(require("./routes/routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express = require('express');
 const app = express();
-app.use(express.json({ limit: '20mb' }));
+app.use(express.json({ limit: '100mb' }));
 app.use((0, cors_1.default)({
     credentials: true,
     origin: process.env.CLIENT_URL || 'https://floroteka.netlify.app/'
