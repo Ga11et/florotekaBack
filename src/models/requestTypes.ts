@@ -20,3 +20,9 @@ export type plantDeletingRequest = {
   }
   user: AdminType
 }
+export interface IDeleteGalleryPhoto {
+  data: {
+    photoId: string
+  }
+  user: AdminType
+}

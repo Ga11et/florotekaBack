@@ -31,6 +31,7 @@ router.post('/scienceActivity', authMiddleware, postScienceActivityValidator, po
 
 router.delete('/plants', authMiddleware, deleteControllers.deletePlant)
 router.delete('/posts', authMiddleware, deleteControllers.post)
+router.delete('/gallery', authMiddleware, deleteControllers.photo)
 
 router.put('/plants', authMiddleware, updateControllers.updatePlant)
 

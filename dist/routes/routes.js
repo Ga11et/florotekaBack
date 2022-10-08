@@ -30,5 +30,6 @@ router.post('/studyProject', authMiddleware_1.default, validations_2.postTechnol
 router.post('/scienceActivity', authMiddleware_1.default, validations_1.postScienceActivityValidator, post_1.postControllers.postScienceActivity);
 router.delete('/plants', authMiddleware_1.default, delete_1.deleteControllers.deletePlant);
 router.delete('/posts', authMiddleware_1.default, delete_1.deleteControllers.post);
+router.delete('/gallery', authMiddleware_1.default, delete_1.deleteControllers.photo);
 router.put('/plants', authMiddleware_1.default, update_1.updateControllers.updatePlant);
 exports.default = router;

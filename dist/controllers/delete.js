@@ -51,5 +51,20 @@ exports.deleteControllers = {
                 return res.status(500).json([{ param: 'data.origin', msg: `Серверная ошибка ${error}` }]);
             }
         });
+    },
+    photo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { photoId } = req.body.data;
+                const admin = yield (0, airtable_1.default)('admins').find(req.body.user.id);
+                if (!admin)
+                    return res.status(422).json([{ param: 'data.origin', msg: "Не получить найти роль" }]);
+                yield (0, airtable_1.default)('galery').destroy([photoId]);
+                return res.status(200).json('ok');
+            }
+            catch (error) {
+                return res.status(500).json([{ param: 'data.origin', msg: `Серверная ошибка ${error}` }]);
+            }
+        });
     }
 };
