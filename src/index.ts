@@ -8,7 +8,7 @@ const app = express()
 app.use(express.json({ limit: '100mb' }))
 app.use(cors({
   credentials: true,
-  origin: process.env.CLIENT_URL || 'https://floroteka.netlify.app/'
+  origin: process.env.CLIENT_URL || 'https://floroteka.netlify.app'
 }))
 app.use(cookieParser())
 app.use('/', router)
