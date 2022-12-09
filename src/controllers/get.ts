@@ -7,6 +7,7 @@ import { tokenServises } from '../servises/tokenServises';
 import { loginServises } from '../servises/loginServises';
 import { GaleryPhotoType, plantPropsType } from '../models/appTypes';
 import { mainServises } from '../servises/mainServises';
+import { postServises } from '../servises/postServises';
 
 export const getControllers = {
   getPlants: async (req: Request, res: Response) => {
@@ -34,24 +35,20 @@ export const getControllers = {
   
   getPosts: async (req: Request, res: Response) => {
 
-    const records = await base('posts').select().firstPage() as AirtablePostRecordType[]
+    let records = [] as AirtablePostRecordType[]
 
-    const returnValue = records.map(el => {
-      const postItem: PostPropsType = {
-        id: el.id,
-        heading: el.fields.Name,
-        description: el.fields.description,
-        text: el.fields.text,
-        date: el.fields.date,
-        after: el.fields.after ? mainServises.imageMapping(el.fields.after)[0] : { small: '', full: '', id: '' },
-        before: el.fields.before ? mainServises.imageMapping(el.fields.before)[0] : { small: '', full: '', id: '' },
-        images: el.fields.images ? mainServises.imageMapping(el.fields.images) : [],
-        type: el.fields.type
-      }
-      return postItem
-    })
+    const processPage = (pageRecords: AirtablePostRecordType[], fetchNext: Function) => {
+      records = [...records, ...pageRecords]
+      fetchNext()
+    }
 
-    res.json(returnValue)
+    const finishProcessing = () => {
+      const returnValue: PostPropsType[] = postServises.postsMapping(records)
+  
+      res.status(200).json(returnValue)
+    }
+
+    await base('posts').select().eachPage(processPage, finishProcessing) 
   },
 
   getPhotos: async (req: Request, res: Response) => {

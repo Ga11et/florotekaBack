@@ -17,6 +17,7 @@ const airtable_1 = __importDefault(require("../airtable"));
 const tokenServises_1 = require("../servises/tokenServises");
 const loginServises_1 = require("../servises/loginServises");
 const mainServises_1 = require("../servises/mainServises");
+const postServises_1 = require("../servises/postServises");
 exports.getControllers = {
     getPlants: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const records = yield (0, airtable_1.default)('plants').select().firstPage();
@@ -39,22 +40,16 @@ exports.getControllers = {
         res.json(returnValue);
     }),
     getPosts: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const records = yield (0, airtable_1.default)('posts').select().firstPage();
-        const returnValue = records.map(el => {
-            const postItem = {
-                id: el.id,
-                heading: el.fields.Name,
-                description: el.fields.description,
-                text: el.fields.text,
-                date: el.fields.date,
-                after: el.fields.after ? mainServises_1.mainServises.imageMapping(el.fields.after)[0] : { small: '', full: '', id: '' },
-                before: el.fields.before ? mainServises_1.mainServises.imageMapping(el.fields.before)[0] : { small: '', full: '', id: '' },
-                images: el.fields.images ? mainServises_1.mainServises.imageMapping(el.fields.images) : [],
-                type: el.fields.type
-            };
-            return postItem;
-        });
-        res.json(returnValue);
+        let records = [];
+        const processPage = (pageRecords, fetchNext) => {
+            records = [...records, ...pageRecords];
+            fetchNext();
+        };
+        const finishProcessing = () => {
+            const returnValue = postServises_1.postServises.postsMapping(records);
+            res.status(200).json(returnValue);
+        };
+        yield (0, airtable_1.default)('posts').select().eachPage(processPage, finishProcessing);
     }),
     getPhotos: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let records = [];
