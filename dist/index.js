@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const cors_1 = __importDefault(require("cors"));
 const routes_1 = __importDefault(require("./routes/routes"));
-const posts_1 = __importDefault(require("./routes/posts"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express = require("express");
 const app = express();
@@ -16,7 +15,6 @@ app.use((0, cors_1.default)({
 }));
 app.use((0, cookie_parser_1.default)());
 app.use("/", routes_1.default);
-app.use("/", posts_1.default);
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Example app listening on port ${process.env.PORT}`);

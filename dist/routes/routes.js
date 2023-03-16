@@ -20,4 +20,14 @@ main_1.router.post("/galery", authMiddleware_1.default, validations_1.postPhotoV
 main_1.router.delete("/plants", authMiddleware_1.default, delete_1.deleteControllers.deletePlant);
 main_1.router.delete("/gallery", authMiddleware_1.default, delete_1.deleteControllers.photo);
 main_1.router.put("/plants", authMiddleware_1.default, update_1.updateControllers.updatePlant);
+// Posts
+main_1.router.get("/posts", get_1.getControllers.getPosts);
+main_1.router.get("/post/:postId", get_1.getControllers.getPostById);
+main_1.router.post("/beforeAfter", authMiddleware_1.default, validations_1.postBeforeAfterValidator, post_1.postControllers.postBeforeAfter);
+main_1.router.post("/technologies", authMiddleware_1.default, validations_1.postTechnologiesValidator, post_1.postControllers.postTechnologies);
+main_1.router.post("/things", authMiddleware_1.default, validations_1.postThingsValidator, post_1.postControllers.postThings);
+main_1.router.post("/studyProject", authMiddleware_1.default, validations_1.postTechnologiesValidator, post_1.postControllers.postStudyProject);
+main_1.router.post("/scienceActivity", authMiddleware_1.default, validations_1.postScienceActivityValidator, post_1.postControllers.postScienceActivity);
+main_1.router.delete("/posts", authMiddleware_1.default, delete_1.deleteControllers.post);
+main_1.router.put("/post/:postId", authMiddleware_1.default, update_1.updateControllers.updatePost);
 exports.default = main_1.router;
