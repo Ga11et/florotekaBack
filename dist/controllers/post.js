@@ -62,10 +62,10 @@ exports.postControllers = {
             const usersData = loginServises_1.loginServises.getData(records);
             const user = usersData.find(el => el.login === login);
             if (!user)
-                return res.status(400).json({ error: 'Неверно введенные данные' });
+                return res.status(400).json([{ param: 'data.origin', msg: 'Неверно введенные данные' }]);
             const isPassValid = bcrypt_1.default.compareSync(pass, user.pass);
             if (!isPassValid)
-                return res.status(400).json({ error: 'Неверно введенные данные' });
+                return res.status(400).json([{ param: 'data.origin', msg: 'Неверно введенные данные' }]);
             const tokens = yield loginServises_1.loginServises.generateTokens({ id: user.id, login: user.login });
             res.status(200)
                 .cookie('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'none', httpOnly: true, secure: true })

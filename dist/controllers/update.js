@@ -20,16 +20,24 @@ exports.updateControllers = {
         try {
             const { plantId, pass, formData } = req.body.data;
             if (!pass)
-                return res.status(422).json([{ param: 'data.origin', msg: "Не отправлен пароль" }]);
-            const admin = yield (0, airtable_1.default)('admins').find(req.body.user.id);
+                return res
+                    .status(422)
+                    .json([{ param: "data.origin", msg: "Не отправлен пароль" }]);
+            const admin = yield (0, airtable_1.default)("admins").find(req.body.user.id);
             if (!admin)
-                return res.status(422).json([{ param: 'data.origin', msg: "Вы не авторизованы" }]);
+                return res
+                    .status(422)
+                    .json([{ param: "data.origin", msg: "Вы не авторизованы" }]);
             const isPassValid = loginServises_1.loginServises.checkPass(pass, admin.fields.password);
             if (!isPassValid)
-                return res.status(422).json([{ param: 'data.origin', msg: "Введен неправильный пароль" }]);
-            const plant = yield (0, airtable_1.default)('plants').find(plantId);
+                return res
+                    .status(422)
+                    .json([{ param: "data.origin", msg: "Введен неправильный пароль" }]);
+            const plant = yield (0, airtable_1.default)("plants").find(plantId);
             if (!plant)
-                return res.status(422).json([{ param: 'data.origin', msg: "Такого растения нет в базе" }]);
+                return res
+                    .status(422)
+                    .json([{ param: "data.origin", msg: "Такого растения нет в базе" }]);
             const newPlantData = {
                 id: plantId,
                 fields: {
@@ -41,15 +49,61 @@ exports.updateControllers = {
                     from: formData.from,
                     having: formData.having,
                     livingPlace: formData.livingPlace,
-                    type: formData.type
-                }
+                    type: formData.type,
+                },
             };
-            yield (0, airtable_1.default)('plants').update([newPlantData]);
-            return res.status(200).json('ok');
+            yield (0, airtable_1.default)("plants").update([newPlantData]);
+            return res.status(200).json("ok");
         }
         catch (error) {
             console.log(error);
-            return res.status(500).json([{ param: 'data.origin', msg: "Серверная ошибка", error: error }]);
+            return res
+                .status(500)
+                .json([
+                { param: "data.origin", msg: "Серверная ошибка", error: error },
+            ]);
         }
-    })
+    }),
+    updatePost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data } = req.body;
+                const { postId } = req.params;
+                const admin = yield (0, airtable_1.default)("admins").find(req.body.user.id);
+                if (!admin)
+                    return res
+                        .status(422)
+                        .json([{ param: "data.origin", msg: "Вы не авторизованы" }]);
+                const post = yield (0, airtable_1.default)("posts").find(postId);
+                if (!post)
+                    return res
+                        .status(422)
+                        .json([{ param: "data.origin", msg: "Такого растения нет в базе" }]);
+                const newPostData = {
+                    id: postId,
+                    fields: {
+                        Name: data.heading,
+                        description: data.description,
+                        type: data.type,
+                        date: data.date,
+                        after: [],
+                        before: [],
+                        images: data.images,
+                        text: "",
+                    },
+                };
+                console.log(data.images);
+                yield (0, airtable_1.default)("posts").update([newPostData]);
+                return res.status(200).json("ok");
+            }
+            catch (error) {
+                console.log(error);
+                return res
+                    .status(500)
+                    .json([
+                    { param: "data.origin", msg: "Серверная ошибка", error: error },
+                ]);
+            }
+        });
+    },
 };

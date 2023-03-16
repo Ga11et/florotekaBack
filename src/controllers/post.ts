@@ -60,10 +60,10 @@ export const postControllers = {
       const usersData = loginServises.getData(records)
 
       const user = usersData.find(el => el.login === login)
-      if (!user) return res.status(400).json({ error: 'Неверно введенные данные' })
+      if (!user) return res.status(400).json([{ param: 'data.origin', msg: 'Неверно введенные данные' }])
 
       const isPassValid = bcrypt.compareSync(pass, user.pass)
-      if (!isPassValid) return res.status(400).json({ error: 'Неверно введенные данные' })
+      if (!isPassValid) return res.status(400).json([{ param: 'data.origin', msg: 'Неверно введенные данные' }])
 
       const tokens = await loginServises.generateTokens({ id: user.id, login: user.login })
 
