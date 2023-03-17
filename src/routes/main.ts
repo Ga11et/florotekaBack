@@ -1,11 +1,13 @@
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 
-const Router = require('express').Router
+const Router = require("express").Router;
 
-export const router = new Router()
+export const router = new Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+router.get("/", (req: Request, res: Response) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
-  res.json('main')
-})
+  res.json("main");
+});
+
+export default router;

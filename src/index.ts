@@ -2,6 +2,7 @@ import cors from "cors";
 import router from "./routes/routes";
 import cookieParser from "cookie-parser";
 import postsRouter from "./routes/posts";
+import mainRouter from "./routes/main";
 
 const express = require("express");
 const app = express();
@@ -14,6 +15,7 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use("/", mainRouter);
 app.use("/", router);
 app.use("/", postsRouter);
 
