@@ -8,7 +8,10 @@ import { postControllers } from "../controllers/post";
 import authMiddleware from "../middlewares/authMiddleware";
 import { postPlantValidator } from "../validations/validations";
 import { deleteControllers } from "../controllers/delete";
-import { router } from "./main";
+
+const Router = require("express").Router;
+
+export const router = new Router();
 
 router.get("/plants", getControllers.getPlants);
 router.get("/galery", getControllers.getPhotos);
