@@ -92,7 +92,6 @@ exports.updateControllers = {
                         text: "",
                     },
                 };
-                console.log(data.images);
                 yield (0, airtable_1.default)("posts").update([newPostData]);
                 return res.status(200).json("ok");
             }

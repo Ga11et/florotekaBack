@@ -1,6 +1,7 @@
 import cors from "cors";
 import router from "./routes/routes";
 import cookieParser from "cookie-parser";
+import postsRouter from "./routes/posts";
 
 const express = require("express");
 const app = express();
@@ -14,6 +15,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use("/", router);
+app.use("/", postsRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

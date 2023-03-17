@@ -89,7 +89,6 @@ export const updateControllers = {
           text: "",
         },
       };
-      console.log(data.images);
       await base("posts").update([newPostData]);
 
       return res.status(200).json("ok");
