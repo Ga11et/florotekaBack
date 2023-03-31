@@ -115,12 +115,18 @@ exports.getControllers = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { postId } = req.params;
-                (0, airtable_1.default)("posts").find(postId, function (err, record) {
-                    if (err) {
-                        console.error(err);
-                    }
-                    return res.status(200).json(postServises_1.postServises.postMapping(record));
-                });
+                const records = [];
+                const processPage = (pageRecords, fetchNext) => {
+                    records.push(...pageRecords);
+                    fetchNext();
+                };
+                const finishProcessing = () => {
+                    const record = records.find((el) => el.id === postId);
+                    if (record)
+                        return res.status(200).json(postServises_1.postServises.postMapping(record));
+                    return res.status(200).json(undefined);
+                };
+                yield (0, airtable_1.default)("posts").select().eachPage(processPage, finishProcessing);
             }
             catch (error) {
                 console.log(error);

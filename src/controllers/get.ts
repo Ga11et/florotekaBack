@@ -12,6 +12,7 @@ import { loginServises } from "../servises/loginServises";
 import { GaleryPhotoType, plantPropsType } from "../models/appTypes";
 import { mainServises } from "../servises/mainServises";
 import { postServises } from "../servises/postServises";
+import e from "cors";
 
 export const getControllers = {
   getPlants: async (req: Request, res: Response) => {
@@ -135,15 +136,24 @@ export const getControllers = {
     try {
       const { postId } = req.params;
 
-      base("posts").find(
-        postId,
-        function (err: string, record: AirtablePostRecordType) {
-          if (err) {
-            console.error(err);
-          }
+      const records = [] as AirtablePostRecordType[];
+
+      const processPage = (
+        pageRecords: AirtablePostRecordType[],
+        fetchNext: Function
+      ) => {
+        records.push(...pageRecords);
+        fetchNext();
+      };
+
+      const finishProcessing = () => {
+        const record = records.find((el) => el.id === postId);
+        if (record)
           return res.status(200).json(postServises.postMapping(record));
-        }
-      );
+        return res.status(200).json(undefined);
+      };
+
+      await base("posts").select().eachPage(processPage, finishProcessing);
     } catch (error) {
       console.log(error);
       return res.status(500).json(undefined);
