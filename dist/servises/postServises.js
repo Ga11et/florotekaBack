@@ -20,6 +20,7 @@ exports.postServises = {
             images: post.fields.images
                 ? mainServises_1.mainServises.imageMapping(post.fields.images)
                 : [],
+            shouldShow: post.fields.shouldShow ? true : false,
         }));
     },
     postMapping(post) {
@@ -39,6 +40,7 @@ exports.postServises = {
             images: post.fields.images
                 ? mainServises_1.mainServises.imageMapping(post.fields.images)
                 : [],
+            shouldShow: post.fields.shouldShow ? true : false,
         };
     },
 };

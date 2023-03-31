@@ -20,6 +20,7 @@ export const postServises = {
       images: post.fields.images
         ? mainServises.imageMapping(post.fields.images)
         : [],
+      shouldShow: post.fields.shouldShow ? true : false,
     }));
   },
   postMapping(post: AirtablePostRecordType): PostPropsType {
@@ -39,6 +40,7 @@ export const postServises = {
       images: post.fields.images
         ? mainServises.imageMapping(post.fields.images)
         : [],
+      shouldShow: post.fields.shouldShow ? true : false,
     };
   },
 };

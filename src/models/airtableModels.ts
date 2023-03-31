@@ -33,6 +33,7 @@ export type AirtablePostRecordType = {
     before: AirtableImageType[];
     after: AirtableImageType[];
     type: postType;
+    shouldShow: boolean;
   };
 };
 

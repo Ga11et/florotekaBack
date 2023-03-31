@@ -25,6 +25,7 @@ export type PostPropsType = {
   after: ImageType;
   images: ImageType[];
   type: postType;
+  shouldShow: boolean;
 };
 export type beboreAfterAirtableContentType = {
   fields: {

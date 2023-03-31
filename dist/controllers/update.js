@@ -90,6 +90,7 @@ exports.updateControllers = {
                         before: [],
                         images: data.images,
                         text: "",
+                        shouldShow: data.shouldShow,
                     },
                 };
                 yield (0, airtable_1.default)("posts").update([newPostData]);

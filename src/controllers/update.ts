@@ -87,6 +87,7 @@ export const updateControllers = {
           before: [],
           images: data.images,
           text: "",
+          shouldShow: data.shouldShow,
         },
       };
       await base("posts").update([newPostData]);
