@@ -115,8 +115,12 @@ exports.getControllers = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { postId } = req.params;
-                const data = yield fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/posts/${postId}`, { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}` } }).then((data) => data.json());
-                return res.status(200).json(postServises_1.postServises.postMapping(data));
+                (0, airtable_1.default)("posts").find(postId, function (err, record) {
+                    if (err) {
+                        console.error(err);
+                    }
+                    return res.status(200).json(postServises_1.postServises.postMapping(record));
+                });
             }
             catch (error) {
                 console.log(error);
