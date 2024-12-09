@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@types/cors": "^2.8.12",
-    "airtable": "^0.11.4",
+    "airtable": "^0.12.2",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.30.0",
     "cookie-parser": "^1.4.6",

@@ -1,4 +1,6 @@
-require('dotenv').config({path: process.cwd() + '/.env'})
+require('dotenv').config({ path: process.cwd() + '/.env' });
 
-const base = require('airtable').base('apphq3bB8tbOJbcaa');
-export default base
+const Airtable = require('airtable');
+Airtable.configure({ apiKey: process.env.AIRTABLE_NEW_TOKEN });
+const base = Airtable.base('apphq3bB8tbOJbcaa');
+export default base;
