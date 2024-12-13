@@ -20,9 +20,7 @@ const mainServises_1 = require("../servises/mainServises");
 const postServises_1 = require("../servises/postServises");
 exports.getControllers = {
     getPlants: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const records = (yield (0, airtable_1.default)("plants")
-            .select()
-            .firstPage());
+        const records = (yield (0, airtable_1.default)('plants').select().firstPage());
         const returnValue = records.map((el) => {
             const plantItem = {
                 id: el.id,
@@ -51,7 +49,7 @@ exports.getControllers = {
             const returnValue = postServises_1.postServises.postsMapping(records);
             res.status(200).json(returnValue);
         };
-        yield (0, airtable_1.default)("posts").select().eachPage(processPage, finishProcessing);
+        yield (0, airtable_1.default)('posts').select().eachPage(processPage, finishProcessing);
     }),
     getPhotos: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let records = [];
@@ -67,7 +65,7 @@ exports.getControllers = {
             }));
             res.status(200).json(returnValue);
         };
-        yield (0, airtable_1.default)("galery").select().eachPage(processPage, finishProcessing);
+        yield (0, airtable_1.default)('galery').select().eachPage(processPage, finishProcessing);
     }),
     getRefresh: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -76,19 +74,17 @@ exports.getControllers = {
             if (!userData.id)
                 return res.status(401).json([
                     {
-                        param: "data.origin",
-                        msg: "Не авторизован (refresh token is unavailable))",
+                        param: 'data.origin',
+                        msg: 'Не авторизован (refresh token is unavailable))',
                     },
                 ]);
-            const records = (yield (0, airtable_1.default)("admins")
-                .select()
-                .firstPage());
+            const records = (yield (0, airtable_1.default)('admins').select().firstPage());
             const existedAdminRecord = records.find((el) => el.id === userData.id);
             if (!existedAdminRecord)
                 return res.status(401).json([
                     {
-                        param: "data.origin",
-                        msg: "Не авторизован (admin is unavailable)",
+                        param: 'data.origin',
+                        msg: 'Не авторизован (admin is unavailable)',
                     },
                 ]);
             const tokens = yield loginServises_1.loginServises.generateTokens({
@@ -97,18 +93,16 @@ exports.getControllers = {
             });
             res
                 .status(200)
-                .cookie("refreshToken", tokens.refreshToken, {
+                .cookie('refreshToken', tokens.refreshToken, {
                 httpOnly: true,
                 maxAge: 30 * 24 * 60 * 60 * 1000,
-                sameSite: "none",
+                sameSite: 'none',
                 secure: true,
             })
                 .json({ token: tokens.accessToken });
         }
         catch (error) {
-            return res
-                .status(401)
-                .json([{ param: "data.origin", msg: "Не авторизован", error: error }]);
+            return res.status(401).json([{ param: 'data.origin', msg: 'Не авторизован', error: error }]);
         }
     }),
     getPostById(req, res) {
@@ -126,7 +120,7 @@ exports.getControllers = {
                         return res.status(200).json(postServises_1.postServises.postMapping(record));
                     return res.status(200).json(undefined);
                 };
-                yield (0, airtable_1.default)("posts").select().eachPage(processPage, finishProcessing);
+                yield (0, airtable_1.default)('posts').select().eachPage(processPage, finishProcessing);
             }
             catch (error) {
                 console.log(error);
